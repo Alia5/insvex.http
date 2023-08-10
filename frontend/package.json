@@ -6,6 +6,18 @@
         "name": "Peter Repukat - FlatspotSoftware",
         "email": "peter@flatspot.pictures"
     },
+    "main": "./build/index.js",
+    "module": "./build/index.js",
+    "exports": {
+        ".": {
+            "import": "./build/index.js",
+            "require": "./build/index.js"
+        },
+        "./handler": "./build/handler.js"
+    },
+    "files": [
+        "build"
+    ],
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",

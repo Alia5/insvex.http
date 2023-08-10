@@ -96,9 +96,18 @@ importers:
 
   backend:
     dependencies:
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
       fliessheck:
         specifier: workspace:^
         version: link:../Fliessheck
+      insvex.http-frontend:
+        specifier: workspace:^
+        version: link:../frontend
     devDependencies:
       '@types/cors':
         specifier: ^2.8.13
