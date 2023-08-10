@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2020",
+    "allowJs": true,
+    "checkJs": true,
+  },
+  "include": [".eslintrc.js", "jest.config.js"],
+}

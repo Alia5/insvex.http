@@ -1,0 +1,36 @@
+{
+    "name": "insvex.http-backend",
+    "version": "1.0.0",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Peter Repukat - FlatspotSoftware",
+        "email": "peter@flatspot.pictures"
+    },
+    "type": "module",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "lint": "eslint src/",
+        "lint:fix": "eslint src/ --fix",
+        "build": "tsc -p tsconfig.json",
+        "dev": "tsc-watch --onSuccess \"node dist/index.js\""
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.13",
+        "@types/express": "^4.17.17",
+        "@types/node": "^20.4.9",
+        "@types/uuid": "^9.0.2",
+        "@typescript-eslint/eslint-plugin": "^6.3.0",
+        "@typescript-eslint/parser": "^6.3.0",
+        "eslint": "^8.46.0",
+        "eslint-plugin-import": "^2.28.0",
+        "eslint-plugin-no-null": "^1.0.2",
+        "eslint-plugin-prefer-arrow": "^1.2.3",
+        "tsc-watch": "^6.0.4",
+        "typescript": "^5.1.6"
+    },
+    "dependencies": {
+        "fliessheck": "workspace:^"
+    }
+}

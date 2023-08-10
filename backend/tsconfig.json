@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "useDefineForClassFields": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": [
+            "esnext"
+        ],
+        "types": [
+            "node"
+        ],
+        "allowJs": false,
+        "useUnknownInCatchVariables": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "exactOptionalPropertyTypes": false,
+        "noImplicitOverride": true,
+        "declaration": false,
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
