@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES2022",
-        "module": "ESNext",
+        "module": "ES2022",
         "noImplicitAny": true,
         "moduleResolution": "node",
         "rootDir": "./src",
@@ -25,7 +25,7 @@
         "emitDecoratorMetadata": true,
         "exactOptionalPropertyTypes": false,
         "noImplicitOverride": true,
-        "declaration": false,
+        "declaration": false
     },
     "include": [
         "src/**/*"

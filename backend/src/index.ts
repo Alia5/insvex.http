@@ -23,6 +23,7 @@ const main = async () => {
     httpServer.listen(port, () => {
         Logger.Info('HTTPserver', `Server listening on port ${port}`);
     });
+
     return httpServer;
 };
 
