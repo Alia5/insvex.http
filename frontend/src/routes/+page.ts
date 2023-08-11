@@ -1,3 +1,2 @@
-
-// it so that it gets served as a static asset in production
-export const prerender = true;
+export const ssr = false;
+export const prerender = false;

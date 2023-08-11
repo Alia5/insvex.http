@@ -21,7 +21,7 @@ export default [
         preferBuiltins: true,
         browser: false,
       }),
-      copy({
+      !dev && copy({
         targets: [
           {
             src: "../frontend/build/*",
@@ -34,7 +34,7 @@ export default [
           },
         ],
       }),
-      replace({
+      !dev && replace({
         "insvex.http-frontend/handler": "./frontend/handler.js",
       }),
       dev &&

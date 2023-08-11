@@ -13,5 +13,13 @@
             "name": "root",
             "path": "."
         }
-    ]
+    ],
+    "settings": {
+        "jest.disabledWorkspaceFolders": [
+            "Fliessheck",
+            "root",
+            "frontend",
+            "backend"
+        ]
+    }
 }

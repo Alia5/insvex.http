@@ -11,11 +11,15 @@ export let data: PageData;
 </svelte:head>
 
 <section>
-    <ul>
-        {#each data.files as file}
-            <li>{file}</li>
-        {/each}
-    </ul>   
+    {#if data.error}
+        <p class="error">{data.error.message}</p>
+    {:else}
+        <ul>
+            {#each data.files as file}
+                <li>{file}</li>
+            {/each}
+        </ul>   
+    {/if}
 </section>
 
 <style>

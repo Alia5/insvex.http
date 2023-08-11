@@ -1,51 +1,54 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 module.exports = {
-    extends: [
-        'eslint:recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking'
-    ],
-    env: {
-        browser: false,
-        node: true
-    },
+    root: true,
+    parser: '@typescript-eslint/parser',
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:svelte/recommended'],
     plugins: [
+        'svelte',
         '@typescript-eslint',
         'no-null',
         'prefer-arrow',
-        'import'
+        'import',
+        'prettier',
     ],
-    parser: '@typescript-eslint/parser',  // Specifies the ESLint parser
-    parserOptions: {
-        ecmaVersion: 2022,  // Allows for the parsing of modern ECMAScript features
-        sourceType: 'module',
-        ecmaFeatures: {
-            jsx: false
-        },
-        project: ['./tsconfig.json'],
-        tsconfigRootDir: __dirname
-    },
+    ignorePatterns: ['*.cjs'],
     overrides: [
         {
-            files: ['test/**/*.ts'],
+            files: ['**/*.svelte'],
+            parser: "svelte-eslint-parser",
             parserOptions: {
-                project: 'tsconfig.spec.json',
-                impliedStrict: true,
-                createDefaultProgram: false,
-                tsconfigRootDir: __dirname
-            }
-        },
-        {
-            files: ['jest.config.js', '.eslintrc.js'],
-            parserOptions: {
-                project: 'tsconfig.config.json',
-                impliedStrict: true,
-                createDefaultProgram: false,
-                tsconfigRootDir: __dirname
+                parser: {
+                    js: '@typescript-eslint/parser',
+                    ts: '@typescript-eslint/parser',
+                    typescript: "@typescript-eslint/parser"
+                },
+                extraFileExtensions: ['.svelte'],
+            },
+            rules: {
+                'prettier/prettier': ['warn', {
+                    "tabWidth": 4,
+                    "bracketSpacing": true,
+                    "trailingComma": "none",
+                    "arrowParens": "always",
+                    "semi": true,
+                    "singleQuote": true,
+                    "printWidth": 110,
+                    "proseWrap": "preserve",
+                    "plugins": ["prettier-plugin-svelte"],
+                }],
             }
         }
     ],
+    parserOptions: {
+        sourceType: 'module',
+        ecmaVersion: 2020,
+        project: './tsconfig.json',
+        extraFileExtensions: ['.svelte'],
+    },
+    env: {
+        browser: true,
+        es2017: true,
+        node: true
+    },
     rules: {
         '@typescript-eslint/no-namespace': 'off',
         '@typescript-eslint/ban-types': 'error',
@@ -64,7 +67,7 @@ module.exports = {
         '@typescript-eslint/unified-signatures': 'error',
         '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/no-unused-vars': 'error',
-        '@typescript-eslint/unbound-method': ['warn', { ignoreStatic: true }],
+        '@typescript-eslint/unbound-method': 'warn',
         '@typescript-eslint/no-floating-promises': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         'object-curly-spacing': ['error', 'always'],
@@ -233,6 +236,4 @@ module.exports = {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
         // e.g. '@typescript-eslint/explicit-function-return-type': 'off',
     },
-    settings: {
-    }
 };
