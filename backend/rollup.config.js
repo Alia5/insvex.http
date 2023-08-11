@@ -42,7 +42,11 @@ export default [
           execArgv: ["-r", "source-map-support/register"],
         }),
     ],
-    external: ["insvex.http-frontend/handler", "./frontend/handler.js"],
+    external: [
+        "insvex.http-frontend/handler",
+        "./frontend/handler.js",
+        ...(dev ? ["fliessheck"] : [])
+    ],
     output: [
       {
         dir: `dist`,
