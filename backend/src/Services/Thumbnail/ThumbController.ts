@@ -53,7 +53,7 @@ export class ThumbController extends Controller {
             }
             this.logger.debug('Installing watcher for directory ', dir);
             watch(dir, { ignoreInitial: true }).on('all', (event, path) => {
-                this.logger.debug(`File ${path} changed, event: ${event}`);
+                // this.logger.debug(`File ${path} changed, event: ${event}`);
                 switch (event) {
                     case 'unlink':
                         if (this.thumbIndex[path] !== undefined) {
