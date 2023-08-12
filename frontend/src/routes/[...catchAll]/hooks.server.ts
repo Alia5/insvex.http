@@ -27,7 +27,7 @@ export const catchAllHandle: Handle = async ({ event, resolve }) => {
     }
 
     Object.assign(event.locals, {
-        files: await fetchResponse.json()
+        files: fetchResponse.json()
     });
 
     Object.assign(event.params, { keeps: 'maybe' });
