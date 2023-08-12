@@ -7,5 +7,6 @@
     "hostDirMap": {
         "*": "./sample"
     },
-    "thumbDir": "thumbs"
+    "thumbDir": "thumbs",
+    "thumbSize": 256
 }

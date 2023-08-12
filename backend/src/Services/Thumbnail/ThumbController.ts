@@ -89,8 +89,8 @@ export class ThumbController extends Controller {
         try {
             this.logger.debug('Generating thumb for', path);
             await generateAsync(path, thumbPath, {
-                width: 256,
-                height: 256
+                width: this.config.thumbSize,
+                height: this.config.thumbSize
             });
         } catch (e) {
             this.logger.error(e);
