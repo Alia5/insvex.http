@@ -1,4 +1,4 @@
-import esbuild from "rollup-plugin-esbuild";
+import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
@@ -12,9 +12,7 @@ export default [
   {
     input: `src/index.ts`,
     plugins: [
-      esbuild({
-        target: "es2022",
-      }),
+      typescript(),
       commonjs(),
       json(),
       resolve({
@@ -36,6 +34,7 @@ export default [
       }),
       !dev && replace({
         "insvex.http-frontend/handler": "./frontend/handler.js",
+        preventAssignment: true,
       }),
       dev &&
         run({
