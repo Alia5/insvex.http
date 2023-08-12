@@ -4,3 +4,4 @@ node_modules/
 logs/
 .vscode
 coverage
+config.json/

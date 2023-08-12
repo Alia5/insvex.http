@@ -3,8 +3,9 @@ import type { PageData } from './$types';
 
 export let data: PageData;
 
-</script>
 
+console.log(import.meta.env.INSVEX_HOST);
+</script>
 <svelte:head>
     <title>Home</title>
     <meta name="description" content="Svelte demo app" />
@@ -18,9 +19,8 @@ export let data: PageData;
             {#each data.files as file}
                 <li>{file}</li>
             {/each}
-        </ul>   
+        </ul>
     {/if}
 </section>
-
 <style>
 </style>

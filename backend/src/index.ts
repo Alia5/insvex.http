@@ -1,12 +1,16 @@
-import express from "express";
-import cors from "cors";
-import { Logger, initServices, setJwtOptions, setJwtSecrets } from "fliessheck";
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import { Logger, initServices, setJwtOptions, setJwtSecrets } from 'fliessheck';
 import * as http from 'http';
-import { handler as frontendHandler } from "insvex.http-frontend/handler";
-import folderListService from "./Services/FolderList";
+import folderListService from './Services/FolderList';
+dotenv.config();
 
 const main = async () => {
-    const port = 3000 as const;
+    const { config } = (await import('./config'));
+    const frontend = await import('insvex.http-frontend/handler');
+
+    const port = config.port;
     const expressApp = express();
     const httpServer = http.createServer(expressApp);
     expressApp.use(cors({
@@ -17,11 +21,11 @@ const main = async () => {
     setJwtSecrets('ChangeMySuperDuperSecret');
     setJwtOptions({  expiresIn: '1d' });
 
-    
-    initServices([folderListService], expressApp)
-    
-    expressApp.use(frontendHandler);
-    
+
+    initServices([folderListService], expressApp);
+
+    expressApp.use(frontend.handler);
+
     httpServer.listen(port, () => {
         Logger.Info('HTTPserver', `Server listening on port ${port}`);
     });

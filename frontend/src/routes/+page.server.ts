@@ -1,18 +1,26 @@
 import axios, { AxiosError } from 'axios';
 import type { PageLoad } from './$types';
+import { env } from '$env/dynamic/private';
+import type { LoadEvent } from '@sveltejs/kit';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const load: PageLoad = async ({ params }: { params: Record<string, unknown> }) => {
+export const load: PageLoad = async (event: LoadEvent) => {
 
-    const axiosResponse: { files: string[]; error?: AxiosError } = await axios.get<string[]>('http://localhost:3000/api/files')
-        .then((res) => ({
-            files: res.data,
-            error: undefined
-        }))
-        .catch((err) => ({
-            files: [],
-            error: JSON.parse(JSON.stringify(err)) as AxiosError
-        }));
+    console.log('Frontend', env.INSVEX_HOST, env.INSVEX_PORT, event.url, env);
+
+    const axiosResponse: { files: string[]; error?: AxiosError } = (
+        await axios.get<string[]>(
+            `http://${env.INSVEX_HOST}:${env.INSVEX_PORT}/api/files`
+        )
+            .then((res) => ({
+                files: res.data,
+                error: undefined
+            }))
+            .catch((err: AxiosError) => ({
+                files: [],
+                error: JSON.parse(JSON.stringify(err)) as AxiosError
+            }))
+    );
 
     return {
         files: axiosResponse.files,
