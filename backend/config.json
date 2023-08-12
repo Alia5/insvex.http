@@ -5,6 +5,7 @@
         "*"
     ],
     "hostDirMap": {
-        "*": "."
-    }
+        "*": "./sample"
+    },
+    "thumbDir": "thumbs"
 }

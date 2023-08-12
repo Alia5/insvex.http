@@ -6,6 +6,7 @@ export interface InsvexConfig {
     host: string;
     allowedDirs: string[]|'*';
     hostDirMap: Record<string, string>;
+    thumbDir: string;
 }
 
 const safeParseJSON = (str: string | undefined): unknown => {
@@ -20,25 +21,40 @@ const safeParseJSON = (str: string | undefined): unknown => {
     }
 };
 
-const fileConfig = safeParseJSON(
-    existsSync('config.json')
-        ?  readFileSync('config.json')?.toString() || '{}'
-        : '{}'
-) as InsvexConfig;
+let config: InsvexConfig|undefined;
 
-export const config: InsvexConfig = {
-    port: parseInt(process.env.INSVEX_PORT || `${fileConfig.port}` || '3000'),
-    host: process.env.INSVEX_HOST || fileConfig.host || 'localhost',
-    allowedDirs: safeParseJSON(process.env.INSVEX_ALLOWED_DIRS) as string[] || fileConfig.allowedDirs || ['*'],
-    hostDirMap: safeParseJSON(process.env.INSVEX_HOST_DIR_MAP) as Record<string, string> || fileConfig.hostDirMap || {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        '*': '.'
-    }
+export const handleConfig = (): InsvexConfig => {
+    const fileConfig = safeParseJSON(
+        existsSync('config.json')
+            ?  readFileSync('config.json')?.toString() || '{}'
+            : '{}'
+    ) as InsvexConfig;
+
+    config = {
+        port: parseInt(process.env.INSVEX_PORT || `${fileConfig.port}` || '3000'),
+        host: process.env.INSVEX_HOST || fileConfig.host || 'localhost',
+        allowedDirs: safeParseJSON(process.env.INSVEX_ALLOWED_DIRS) as string[] || fileConfig.allowedDirs || ['*'],
+        hostDirMap: safeParseJSON(process.env.INSVEX_HOST_DIR_MAP) as Record<string, string> || fileConfig.hostDirMap || {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            '*': '.'
+        },
+        thumbDir: process.env.INSVEX_THUMB_DIR || fileConfig.thumbDir || 'thumbs'
+    };
+
+    writeFileSync('config.json', JSON.stringify(config, undefined, 4));
+
+    process.env.INSVEX_PORT = config.port.toString();
+    process.env.INSVEX_HOST = config.host;
+    process.env.INSVEX_ALLOWED_DIRS = JSON.stringify(config.allowedDirs);
+    process.env.INSVEX_HOST_DIR_MAP = JSON.stringify(config.hostDirMap);
+    process.env.INSVEX_THUMB_DIR = config.thumbDir;
+
+    return config;
 };
 
-writeFileSync('config.json', JSON.stringify(config, undefined, 4));
-
-process.env.INSVEX_PORT = config.port.toString();
-process.env.INSVEX_HOST = config.host;
-process.env.INSVEX_ALLOWED_DIRS = JSON.stringify(config.allowedDirs);
-process.env.INSVEX_HOST_DIR_MAP = JSON.stringify(config.hostDirMap);
+export const getConfig = (): InsvexConfig => {
+    if (!config) {
+        return handleConfig();
+    }
+    return config;
+};
