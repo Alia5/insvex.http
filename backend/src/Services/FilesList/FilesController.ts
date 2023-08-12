@@ -7,6 +7,8 @@ import { existsSync } from 'fs';
 import { fullResolve, relativePath } from '../../utils';
 import { ThumbController } from '../Thumbnail/ThumbController';
 
+export type DirList = {path: string; isDir: boolean; files?: DirList }[];
+
 export class FilesController extends Controller {
 
     private config = getConfig();
@@ -31,9 +33,17 @@ export class FilesController extends Controller {
         return absolutePath;
     }
 
-    public listDirForHost(host: string, path?: string) {
+    public listDirForHost(host: string, path?: string): Promise<DirList> {
         const absolutePath = this.getAbsolutePathForHost(host);
-        return readdir(resolve(absolutePath, path || ''));
+        return readdir(resolve(absolutePath, path || '')).then(async (files) =>
+            Promise.all(files.map(async (f) => {
+                const isDir = (await stat(resolve(absolutePath, path || '', f))).isDirectory();
+                return ({
+                    path: f,
+                    isDir: isDir
+                    // files: isDir ? await this.listDirForHost(host, path ? `${path}/${f}` : f ) : undefined
+                }); }))
+        ) as Promise<DirList>;
     }
 
     public async serveFile(

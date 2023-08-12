@@ -8,5 +8,6 @@
         "*": "./sample"
     },
     "thumbDir": "thumbs",
-    "thumbSize": 256
+    "thumbSize": 256,
+    "handleFileServe": true
 }

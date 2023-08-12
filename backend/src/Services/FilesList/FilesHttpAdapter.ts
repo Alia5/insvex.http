@@ -72,7 +72,7 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
         });
     }
 
-    private async listDirForHost(host: string): Promise<string[]> {
+    private async listDirForHost(host: string) {
         this.logger.debug('Listing dir for host', host);
         try {
             return this.controller.listDirForHost(host);
