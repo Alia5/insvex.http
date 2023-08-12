@@ -1,6 +1,6 @@
 import { Controller } from 'fliessheck';
 import { InsvexConfig, getConfig } from '../../config';
-import { configRelative, fullResolve } from '../../utils';
+import { fullResolve } from '../../utils';
 import { existsSync, mkdirSync, statSync, writeFileSync, readFileSync, unlink } from 'fs';
 import { watch } from 'chokidar';
 import { resolve } from 'path';
@@ -82,8 +82,8 @@ export class ThumbController extends Controller {
     }
 
     public async getThumb(path: string): Promise<string> {
-        const relativeFile = configRelative(path).replace(/\//g, '_');
-        const thumbPath = resolve(fullResolve(this.config.thumbDir), relativeFile + '.png');
+        const singleFileName = path.replace(/\//g, '_');
+        const thumbPath = resolve(fullResolve(this.config.thumbDir), singleFileName + '.png');
         if (this.thumbIndex[path] && existsSync(this.thumbIndex[path])) {
             this.logger.info('Thumb already exists, returning cached path', this.thumbIndex[path]);
             return this.thumbIndex[path];
