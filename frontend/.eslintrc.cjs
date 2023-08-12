@@ -1,30 +1,39 @@
 module.exports = {
     root: true,
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:svelte/recommended',
+        'prettier'
+    ],
     parser: '@typescript-eslint/parser',
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:svelte/recommended'],
     plugins: [
-        'svelte',
         '@typescript-eslint',
         'no-null',
         'prefer-arrow',
         'import',
-        'prettier',
+        'prettier'
     ],
+    parserOptions: {
+        sourceType: 'module',
+        ecmaVersion: 2020,
+        project: './tsconfig.json',
+        extraFileExtensions: ['.svelte'],
+    },
     ignorePatterns: ['*.cjs'],
     overrides: [
         {
-            files: ['**/*.svelte'],
+            files: ['*.svelte'],
             parser: "svelte-eslint-parser",
             parserOptions: {
-                parser: {
-                    js: '@typescript-eslint/parser',
-                    ts: '@typescript-eslint/parser',
-                    typescript: "@typescript-eslint/parser"
-                },
-                extraFileExtensions: ['.svelte'],
+                parser:  "@typescript-eslint/parser",
             },
             rules: {
                 'prettier/prettier': ['warn', {
+                    "svelteStrictMode": true,
+                    "svelteBracketNewLine": false,
+                    "svelteAllowShorthand": false,
+                    "svelteIndentScriptAndStyle": false,
                     "tabWidth": 4,
                     "bracketSpacing": true,
                     "trailingComma": "none",
@@ -38,12 +47,6 @@ module.exports = {
             }
         }
     ],
-    parserOptions: {
-        sourceType: 'module',
-        ecmaVersion: 2020,
-        project: './tsconfig.json',
-        extraFileExtensions: ['.svelte'],
-    },
     env: {
         browser: true,
         es2017: true,
