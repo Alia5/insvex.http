@@ -1,9 +1,9 @@
 import { Controller, NotFoundError, SendFileOptions, ServiceRegistry } from 'fliessheck';
-import { readdir, stat } from 'fs/promises';
+import { stat } from 'fs/promises';
 import { resolve } from 'node:path';
 import { getConfig } from '../../config';
 import { DirectoryNotAllowed, HostNotRegistered, IsDirError, NotFileError } from './Errors';
-import { existsSync } from 'fs';
+import { existsSync, readdirSync } from 'fs';
 import { fullResolve, relativePath } from '../../utils';
 import { ThumbController } from '../Thumbnail/ThumbController';
 
@@ -33,15 +33,14 @@ export class FilesController extends Controller {
         return absolutePath;
     }
 
-    public listDirForHost(host: string, path?: string): Promise<DirList> {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public  listDirForHost(host: string, path?: string): DirList {
         const absolutePath = this.getAbsolutePathForHost(host);
-        return readdir(resolve(absolutePath, path || ''), { withFileTypes: true }).then((files) =>
-            files.map((f) => ({
+        return readdirSync(resolve(absolutePath, path || ''), { withFileTypes: true, recursive: false })
+            .map((f) => ({
                 path: f.name,
                 isDir: f.isDirectory()
-                // files: isDir ? await this.listDirForHost(host, path ? `${path}/${f}` : f ) : undefined
-            }))
-        ) as Promise<DirList>;
+            }));
     }
 
     public async serveFile(
