@@ -1,7 +1,7 @@
 import { Controller } from 'fliessheck';
 import { InsvexConfig, getConfig } from '../../config';
 import { configRelative, fullResolve } from '../../utils';
-import { existsSync, mkdirSync, statSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, statSync, writeFileSync, readFileSync, unlink } from 'fs';
 import { watch } from 'chokidar';
 import { resolve } from 'path';
 import { generateAsync } from 'filepreview_ts';
@@ -57,6 +57,8 @@ export class ThumbController extends Controller {
                 switch (event) {
                     case 'unlink':
                         if (this.thumbIndex[path] !== undefined) {
+                            this.logger.info('File', path, 'was deleted, removing thumb');
+                            unlink(this.thumbIndex[path], () => undefined);
                             delete this.thumbIndex[path];
                             this.writeThumbIndex();
                         }
@@ -83,7 +85,7 @@ export class ThumbController extends Controller {
         const relativeFile = configRelative(path).replace(/\//g, '_');
         const thumbPath = resolve(fullResolve(this.config.thumbDir), relativeFile + '.png');
         if (this.thumbIndex[path] && existsSync(this.thumbIndex[path])) {
-            this.logger.debug('Thumb already exists, returning cached path');
+            this.logger.info('Thumb already exists, returning cached path', this.thumbIndex[path]);
             return this.thumbIndex[path];
         }
         try {
