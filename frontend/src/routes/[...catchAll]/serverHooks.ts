@@ -3,7 +3,7 @@ import type { Handle } from '@sveltejs/kit';
 
 export const catchAllHandle: Handle = async (input) => {
 
-    const fetchResponse = await fetchDirListOrFile(input.event);
+    const fetchResponse = await fetchDirListOrFile(input.event.url.host, input.event.url.pathname);
 
     // DirList is actually file...
     if (!fetchResponse.headers.get('Content-Type')?.includes('application/json')) {

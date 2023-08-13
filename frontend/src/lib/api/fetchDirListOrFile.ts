@@ -1,17 +1,19 @@
 import { env } from '$env/dynamic/public';
-import { error, type LoadEvent, type RequestEvent } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 export type DirList = {
 
     path: string;
     isDir: boolean;
 }[];
 
-export const fetchDirListOrFile = async (event: RequestEvent|LoadEvent) => {
+export const fetchDirListOrFile = async (forHost: string, path: string, fetchThumb = false) => {
 
     const host = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
     const port = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
 
-    const fetchUrl = `http://${host}:${port}/api/files/${event.url.host}${event.url.pathname}`;
+    const fetchUrl = `http://${host}:${port}/api/files/${forHost}${path}${
+        fetchThumb ? '?thumb' : ''
+    }`;
     const fetchResponse = await fetch(fetchUrl);
 
     if (fetchResponse?.status < 200 || fetchResponse?.status >= 300) {

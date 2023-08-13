@@ -3,7 +3,7 @@
         color-scheme: dark light;
         --textAlpha: 1;
         --textColor: rgb(255 255 255 / var(--textAlpha));
-        --colorPrimary: #273346;
+        --colorPrimary: #1f64d4;
         --colorPrimaryHover: #273a55;
         --colorPrimaryActive: #35598b;
         --cardColor: #3a3b3d;
@@ -30,7 +30,7 @@
 .theme-dark {
     --textAlpha: 1;
     --textColor: rgb(255 255 255 / var(--textAlpha));
-    --colorPrimary: #273346;
+    --colorPrimary: #1f64d4;
     --colorPrimaryHover: #273a55;
     --colorPrimaryActive: #35598b;
     --cardColor: #3a3b3d;
@@ -54,7 +54,9 @@
     --transitionDuration: 0.25s;
 }
 
-body {
+*,
+::before,
+::after {
     transition-property: all;
     transition-duration: var(--transitionDuration);
     transition-timing-function: ease-in-out;
@@ -149,7 +151,7 @@ button {
     }
 }
 
-input {
+input:not([type='checkbox']) {
     background-color: var(--colorPrimary);
     border: 1px solid transparent;
     outline: 1px solid transparent;
@@ -165,6 +167,41 @@ input {
     &:is(:hover, :focus) {
         box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.5);
         background-color: var(--colorPrimaryHover);
+    }
+}
+
+
+input[type='checkbox']:is(.toggle) {
+    appearance: none;
+    min-width: 3.5em;
+    position: relative;
+    display: grid;
+    place-items: center;
+    --toggle-height: 2em;
+    --toggle-width: 3.5em;
+    --indicator-padding: 0.6em;
+    &::before {
+        content: '';
+        width: var(--toggle-width);
+        height: var(--toggle-height);
+        background-color: var(--colorPrimary);
+        inset: 0;
+        border-radius: 100vh;
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        --size: calc(var(--toggle-height) - var(--indicator-padding));
+        height: var(--size);
+        width: var(--size);
+        background-color: var(--textColor);
+        border-radius: 100vh;
+        left: calc(var(--indicator-padding) / 2);
+    }
+    &:checked {
+        &::after {
+            left: calc(var(--toggle-width) - var(--toggle-height) + (var(--indicator-padding) / 2));
+        }
     }
 }
 

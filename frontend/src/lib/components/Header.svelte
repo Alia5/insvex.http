@@ -9,9 +9,6 @@ const defaultDarkMode = !browser
     ? false
     : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 const toggleMode = () => {
-    if (!browser) {
-        return;
-    }
     const body = document.querySelector('body');
     const hasTheme = body?.classList.contains('theme-dark') || body?.classList.contains('theme-light');
     const isDark = hasTheme ? body?.classList.contains('theme-dark') : defaultDarkMode;
@@ -21,7 +18,8 @@ const toggleMode = () => {
 </script>
 
 <header>
-    <button><IconMenu /></button>
+    <button no-js-hidden><IconMenu /></button>
+    <div no-js-shown></div>
     <div class="breadcrumbs">
         <a href="/">{host}</a>
         {#each path
@@ -34,7 +32,11 @@ const toggleMode = () => {
             <a href="/{part}">{part.split('/').pop()}</a>
         {/each}
     </div>
-    <button on:click="{toggleMode}">ColorMode</button>
+
+    <input type="checkbox" class="toggle" no-js-hidden on:change="{toggleMode}" />
+    <div no-js-shown>
+        <p>Works best with Javascript enabled</p>
+    </div>
 </header>
 
 <style lang="postcss">
