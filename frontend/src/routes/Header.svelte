@@ -1,5 +1,9 @@
 <script lang="ts">
 import { browser } from '$app/environment';
+import IconMenu from '~icons/ic/baseline-menu';
+
+export let host: string;
+export let path: string;
 
 const defaultDarkMode = !browser
     ? false
@@ -14,9 +18,33 @@ const toggleMode = () => {
     body?.classList.remove(isDark ? 'theme-dark' : 'theme-light');
     body?.classList.add(isDark ? 'theme-light' : 'theme-dark');
 };
+
+console.log(
+    'path',
+    path
+        .split('/')
+        .filter((p) => !!p)
+        .map((p, idx, arr) => {
+            const parts = arr.slice(0, idx + 1);
+            return parts.join('/');
+        })
+);
 </script>
 
 <header>
+    <button><IconMenu /></button>
+    <div class="breadcrumbs">
+        <a href="/">{host}</a>
+        {#each path
+            .split('/')
+            .filter((p) => !!p)
+            .map((p, idx, arr) => {
+                const parts = arr.slice(0, idx + 1);
+                return parts.join('/');
+            }) as part}
+            <a href="/{part}">{part.split('/').pop()}</a>
+        {/each}
+    </div>
     <button on:click="{toggleMode}">ColorMode</button>
 </header>
 
@@ -29,5 +57,12 @@ header {
     padding: 1em;
     grid-template-columns: min-content auto min-content;
     gap: 1em;
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    flex-direction: row;
 }
 </style>

@@ -5,7 +5,7 @@
         "*"
     ],
     "hostDirMap": {
-        "*": "/mnt/d/Alia5/Downloads"
+        "*": "sample"
     },
     "thumbDir": "thumbs",
     "thumbSize": 256,

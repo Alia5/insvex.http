@@ -1,10 +1,13 @@
-<script>
+<script lang="ts">
+import type { LayoutData } from './$types';
 import Header from './Header.svelte';
 import './styles.pcss';
+
+export let data: LayoutData;
 </script>
 
 <div class="app">
-    <Header />
+    <Header host="{data.host}" path="{data.path}" />
     <main>
         <slot />
     </main>
