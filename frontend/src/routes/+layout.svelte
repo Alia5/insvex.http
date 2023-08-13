@@ -1,12 +1,22 @@
 <script lang="ts">
 import type { LayoutData } from './$types';
-import Header from './Header.svelte';
+import Header from '../lib/components/Header.svelte';
 import './styles.pcss';
 
 export let data: LayoutData;
 </script>
 
 <div class="app">
+    <noscript style="display: none;">
+        <style>
+        *[no-js-hidden] {
+            display: none;
+        }
+        *[no-js-shown] {
+            display: inherit;
+        }
+        </style>
+    </noscript>
     <Header host="{data.host}" path="{data.path}" />
     <main>
         <slot />

@@ -12,3 +12,4 @@ declare global {
 export {};
 
 import 'unplugin-icons/types/svelte';
+import './additional-svelte-typings';
