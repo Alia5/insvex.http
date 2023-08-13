@@ -1,9 +1,9 @@
-import { fetchDirList } from '$lib/api/fetchDirList';
+import { fetchDirListOrFile } from '$lib/api/fetchDirListOrFile';
 import type { Handle } from '@sveltejs/kit';
 
 export const catchAllHandle: Handle = async (input) => {
 
-    const fetchResponse = await fetchDirList(input.event);
+    const fetchResponse = await fetchDirListOrFile(input.event);
 
     // DirList is actually file...
     if (!fetchResponse.headers.get('Content-Type')?.includes('application/json')) {

@@ -6,7 +6,7 @@ export type DirList = {
     isDir: boolean;
 }[];
 
-export const fetchDirList = async (event: RequestEvent|LoadEvent) => {
+export const fetchDirListOrFile = async (event: RequestEvent|LoadEvent) => {
 
     const host = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
     const port = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
