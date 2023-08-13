@@ -27,5 +27,5 @@ console.log(import.meta.env.INSVEX_HOST);
     </ul>
 </section>
 
-<style>
+<style lang="postcss">
 </style>

@@ -1,11 +1,66 @@
-html {
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark light;
+        --textAlpha: 1;
+        --textColor: rgb(255 255 255 / var(--textAlpha));
+        --colorPrimary: #273346;
+        --colorPrimaryHover: #273a55;
+        --colorPrimaryActive: #35598b;
+        --cardColor: #3a3b3d;
+        --backgroundColor: #202125;
+        --shadowColor: #00000050;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        color-scheme: light dark;
+        --textAlpha: 1;
+        --textColor: rgb(0 0 0 / var(--textAlpha));
+        --colorPrimary: #273346;
+        --colorPrimaryHover: #273a55;
+        --colorPrimaryActive: #35598b;
+        --cardColor: #f1f1f1;
+        --backgroundColor: #f4f4f4;
+        --shadowColor: #00000020;
+    }
+}
+
+
+.theme-dark {
+    --textAlpha: 1;
+    --textColor: rgb(255 255 255 / var(--textAlpha));
+    --colorPrimary: #273346;
+    --colorPrimaryHover: #273a55;
+    --colorPrimaryActive: #35598b;
+    --cardColor: #3a3b3d;
+    --backgroundColor: #202125;
+    --shadowColor: #00000050;
+}
+
+
+.theme-light {
     --textAlpha: 1;
     --textColor: rgb(0 0 0 / var(--textAlpha));
     --colorPrimary: #273346;
     --colorPrimaryHover: #273a55;
     --colorPrimaryActive: #35598b;
-    --backgroundColor: #fff;
+    --cardColor: #f1f1f1;
+    --backgroundColor: #f4f4f4;
+    --shadowColor: #00000020;
 }
+
+:root {
+    --transitionDuration: 0.25s;
+}
+
+body {
+    transition-property: all;
+    transition-duration: var(--transitionDuration);
+    transition-timing-function: ease-in-out;
+    transition-delay: 0s;
+}
+
 
 *,
 ::before,
@@ -75,8 +130,6 @@ button {
     outline: 1px solid transparent;
     padding: 1rem;
     color: var(--textColor);
-    font-family: "Lato", Arial, Helvetica, sans-serif;
-    font-size: 1em;
     border-radius: 0.5rem;
     margin: 0.25rem;
     box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.1);
@@ -98,8 +151,6 @@ input {
     outline: 1px solid transparent;
     padding: 0.25em 0.5em;
     color: var(--textColor);
-    font-family: "Lato", Arial, Helvetica, sans-serif;
-    font-size: 1em;
     border-radius: 0.5rem;
     box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.1);
     transition: all 0.2s ease-in-out;
@@ -111,31 +162,6 @@ input {
         box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.5);
         background-color: var(--colorPrimaryHover);
     }
-}
-
-::-webkit-scrollbar {
-    width: var(--scrollBarWidth);
-    height: var(--scrollBarWidth);
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 100vw;
-    margin-block: 0.5em;
-}
-
-*:is(:hover, :focus){
-    &::-webkit-scrollbar-track {
-        background: var(--scrollbarBG);
-    }   
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--thumbBG);
-    }
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 100vw;
 }
 
 /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
