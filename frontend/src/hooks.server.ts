@@ -1,5 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
-import { catchAllHandle } from './routes/[...catchAll]/hooks.server';
+import { catchAllHandle } from './routes/[...catchAll]/serverHooks';
 
 export const handle: Handle = async (input) => {
     if (input.event.route.id === '/[...catchAll]') {

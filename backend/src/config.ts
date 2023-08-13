@@ -8,7 +8,6 @@ export interface InsvexConfig {
     hostDirMap: Record<string, string>;
     thumbDir: string;
     thumbSize: number;
-    handleFileServe: boolean;
 }
 
 const safeParseJSON = (str: string | undefined): unknown => {
@@ -41,8 +40,7 @@ export const handleConfig = (): InsvexConfig => {
             '*': '.'
         },
         thumbDir: process.env.INSVEX_THUMB_DIR || fileConfig.thumbDir || 'thumbs',
-        thumbSize: process.env.INSVEX_THUMB_SIZE ? parseInt(process.env.INSVEX_THUMB_SIZE) : fileConfig.thumbSize || 256,
-        handleFileServe: safeParseJSON(process.env.INSVEX_HANDLE_FILE_SERVE) as boolean || fileConfig.handleFileServe || true
+        thumbSize: process.env.INSVEX_THUMB_SIZE ? parseInt(process.env.INSVEX_THUMB_SIZE) : fileConfig.thumbSize || 256
     };
 
     writeFileSync('config.json', JSON.stringify(config, undefined, 4));
@@ -53,7 +51,6 @@ export const handleConfig = (): InsvexConfig => {
     process.env.INSVEX_HOST_DIR_MAP = JSON.stringify(config.hostDirMap);
     process.env.INSVEX_THUMB_DIR = config.thumbDir;
     process.env.INSVEX_THUMB_SIZE = config.thumbSize.toString();
-    process.env.INSVEX_HANDLE_FILE_SERVE = config.handleFileServe ? 'true' : 'false';
 
     return config;
 };

@@ -10,7 +10,15 @@ dotenv.config();
 
 const main = async () => {
     const config = getConfig();
-    const frontend = await import('insvex.http-frontend/handler');
+
+    const frontend = await import('insvex.http-frontend/handler').catch(() => {
+        Logger.Warn('Main',
+            'SSR frontend not found!\n'
+            + 'This API need to be publicly accessible!\n'
+            + 'You also need to place the Frontend files into a (the) webroot and configure your webserver accordingly\n'
+        );
+        return undefined;
+    });
 
     const port = config.port;
     const expressApp = express();
@@ -26,7 +34,9 @@ const main = async () => {
 
     initServices([folderListService, thumbService], expressApp);
 
-    expressApp.use(frontend.handler);
+    if (frontend) {
+        expressApp.use(frontend.handler);
+    }
 
     httpServer.listen(port, () => {
         Logger.Info('HTTPserver', `Server listening on port ${port}`);

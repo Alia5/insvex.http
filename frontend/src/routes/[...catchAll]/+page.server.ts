@@ -1,16 +1,11 @@
-import type { LoadEvent } from '@sveltejs/kit';
-import type { PageLoad } from './$types';
+import type { ServerLoad, ServerLoadEvent } from '@sveltejs/kit';
 
-interface HookLokals {
-    files: Promise<{
-        path: string;
-        isDir: boolean;
-    }[]>;
-}
-export const load: PageLoad = async (event: LoadEvent) => {
-    const locals = (event as LoadEvent & { locals: HookLokals }).locals;
-    return {
-        files: locals.files,
-        currentPath: event.url.pathname
+export const load: ServerLoad|undefined = import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true'
+    ? undefined
+    : async (event: ServerLoadEvent) => {
+        const locals = event.locals as Record<string, unknown>;
+        return {
+            files: locals?.files || undefined,
+            currentPath: event.url.pathname
+        };
     };
-};

@@ -18,17 +18,6 @@ const toggleMode = () => {
     body?.classList.remove(isDark ? 'theme-dark' : 'theme-light');
     body?.classList.add(isDark ? 'theme-light' : 'theme-dark');
 };
-
-console.log(
-    'path',
-    path
-        .split('/')
-        .filter((p) => !!p)
-        .map((p, idx, arr) => {
-            const parts = arr.slice(0, idx + 1);
-            return parts.join('/');
-        })
-);
 </script>
 
 <header>
