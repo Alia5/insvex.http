@@ -36,6 +36,7 @@ const main = async () => {
 
     if (frontend) {
         expressApp.use(frontend.handler);
+        expressApp.use(express.static('frontend/client'));
     }
 
     httpServer.listen(port, () => {
