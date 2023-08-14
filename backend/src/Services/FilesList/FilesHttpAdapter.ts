@@ -14,11 +14,22 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
     }
 
     private async getForHost(host: string, params: RequestParams) {
-        if (params.url.path) {
+        if (params.url.path || params.query.thumb !== undefined) {
             if (params.query.thumb !== undefined) {
-                return this.serveThumb(host, params.url.path);
+                const thumb = Array.isArray(params.query.thumb) ? params.query.thumb.join('')  : params.query.thumb;
+                if (typeof thumb === 'string' && thumb.length > 0) {
+                    const thumbPath = params.url.path?.endsWith('/')
+                        ? params.url.path + thumb
+                        : (params.url.path ?? '') + '/' + thumb;
+                    return this.serveThumb(host, thumbPath.startsWith('/') ? thumbPath.slice(1) :  thumbPath);
+                }
+                if (params.url.path) {
+                    return this.serveThumb(host, params.url.path);
+                }
             }
-            return this.serveFile(host, params.url.path);
+            if (params.url.path) {
+                return this.serveFile(host, params.url.path);
+            }
         }
         return this.listDirForHost(host);
     }
@@ -72,6 +83,7 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
         });
     }
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     private async listDirForHost(host: string) {
         this.logger.debug('Listing dir for host', host);
         try {
