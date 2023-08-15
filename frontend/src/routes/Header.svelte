@@ -33,7 +33,7 @@ const toggleMode = () => {
         {/each}
     </div>
 
-    <input type="checkbox" class="toggle" no-js-hidden on:change="{toggleMode}" />
+    <input no-js-hidden type="checkbox" class="toggle" on:change="{toggleMode}" />
     <div no-js-shown>
         <p>Works best with Javascript enabled</p>
     </div>

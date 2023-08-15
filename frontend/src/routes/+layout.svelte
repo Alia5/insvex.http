@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { LayoutData } from './$types';
-import Header from '../lib/components/Header.svelte';
+import Header from './Header.svelte';
 import './styles.pcss';
 
 export let data: LayoutData;

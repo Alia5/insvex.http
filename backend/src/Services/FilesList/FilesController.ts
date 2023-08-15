@@ -7,7 +7,15 @@ import { existsSync, readdirSync } from 'fs';
 import { fullResolve, relativePath } from '../../utils';
 import { ThumbController } from '../Thumbnail/ThumbController';
 
-export type DirList = {path: string; isDir: boolean; files?: DirList }[];
+export type DirList = { path: string; isDir: boolean }[];
+export interface PagedDirList {
+    page: number;
+    totalPages: number;
+    totalFiles: number;
+    files: DirList;
+}
+
+const PAGE_SIZE = 100;
 
 export class FilesController extends Controller {
 
@@ -34,19 +42,36 @@ export class FilesController extends Controller {
     }
 
     // eslint-disable-next-line @typescript-eslint/require-await
-    public  listDirForHost(host: string, path?: string): DirList {
+    public  listDirForHost(host: string, path?: string, page = 1): PagedDirList {
         const absolutePath = this.getAbsolutePathForHost(host);
-        return readdirSync(resolve(absolutePath, path || ''), { withFileTypes: true, recursive: false })
+        const files = readdirSync(resolve(absolutePath, path || ''), { withFileTypes: true, recursive: false })
             .map((f) => ({
                 path: f.name,
                 isDir: f.isDirectory()
-            }));
+            })).sort((a, b) => {
+                if (a.isDir === b.isDir) {
+                    return a.path.localeCompare(b.path);
+                }
+                return a.isDir ? -1 : 1;
+            });
+        const totalFiles = files.length;
+        files.splice(0, page <= 0 ? 0 :(page - 1) * PAGE_SIZE);
+        if (page > 0) {
+            files.length = files.length < PAGE_SIZE ? files.length : PAGE_SIZE;
+        }
+        return {
+            page,
+            totalPages: Math.ceil(totalFiles / PAGE_SIZE),
+            totalFiles,
+            files
+        };
     }
 
-    public async serveFile(
+    public async serveFileOrList(
         host: string,
         path: string,
-        sendFileFn: (file: string, options?: SendFileOptions) => void
+        sendFileFn: (file: string, options?: SendFileOptions) => void,
+        page = 1
     ) {
         const basePath = this.getAbsolutePathForHost(host);
         const filePath = resolve(basePath, path);
@@ -56,7 +81,7 @@ export class FilesController extends Controller {
         const fStat = await stat(filePath);
         if (fStat.isDirectory() ) {
             // throw new IsDirError(`${path} is dir`);
-            return this.listDirForHost(host, path);
+            return this.listDirForHost(host, path, page);
         }
         if (!fStat.isFile() ) {
             throw new NotFileError(`${path} is not a file`);

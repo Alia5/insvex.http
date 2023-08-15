@@ -6,13 +6,22 @@ export type DirList = {
     isDir: boolean;
 }[];
 
-export const fetchDirListOrFile = async (forHost: string, path: string, thumbName?: string) => {
+export interface PagedDirList {
+    page: number;
+    totalPages: number;
+    totalFiles: number;
+    files: DirList;
+}
+
+export const fetchDirListOrFile = async (forHost: string, path: string, thumbName?: string, page?: string) => {
 
     const host = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
     const port = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
 
     const fetchUrl = `http://${host}:${port}/api/files/${forHost}${path}${
         thumbName ? `?thumb=${thumbName}` : ''
+    }${
+        page ? `?page=${page}` : ''
     }`;
     const fetchResponse = await fetch(fetchUrl);
 

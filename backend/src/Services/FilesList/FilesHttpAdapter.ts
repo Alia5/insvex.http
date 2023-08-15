@@ -14,6 +14,11 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
     }
 
     private async getForHost(host: string, params: RequestParams) {
+        // eslint-disable-next-line
+        const page = params.query.page ? Number.parseInt(`${params.query.page}`, 10) : 1;
+        if (Number.isNaN(page)) {
+            throw new BadRequestError('page must be a number');
+        }
         if (params.url.path || params.query.thumb !== undefined) {
             if (params.query.thumb !== undefined) {
                 const thumb = Array.isArray(params.query.thumb) ? params.query.thumb.join('')  : params.query.thumb;
@@ -28,20 +33,21 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
                 }
             }
             if (params.url.path) {
-                return this.serveFile(host, params.url.path);
+                return this.serveFileOrList(host, params.url.path, page);
             }
         }
-        return this.listDirForHost(host);
+        return this.listDirForHost(host, page);
     }
 
-    private async serveFile(host: string, path: string) {
+    private async serveFileOrList(host: string, path: string, page = 1) {
 
-        this.logger.debug('serving file for', host, '; file:', path);
-        return this.controller.serveFile(
+        this.logger.debug('serving file for', host, '; file:', path, '; page:', page);
+        return this.controller.serveFileOrList(
             host,
             path,
             (file, opts) =>
-                this.sendFile(file, opts)
+                this.sendFile(file, opts),
+            page
         ).catch((e) => {
             if (e instanceof DirectoryNotAllowed) {
                 throw new ForbiddenError(`${e.constructor.name}: ${e.message}`);
@@ -84,10 +90,10 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
     }
 
     // eslint-disable-next-line @typescript-eslint/require-await
-    private async listDirForHost(host: string) {
-        this.logger.debug('Listing dir for host', host);
+    private async listDirForHost(host: string, page = 1) {
+        this.logger.debug('Listing dir for host', host, '; page:', page);
         try {
-            return this.controller.listDirForHost(host);
+            return this.controller.listDirForHost(host, undefined, page);
         } catch (e) {
             if (e instanceof DirectoryNotAllowed) {
                 throw new ForbiddenError(`${e.constructor.name}: ${e.message}`);

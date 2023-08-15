@@ -17,51 +17,84 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
 </svelte:head>
 
 <section>
-    <ul no-js-shown>
-        {#each data.files as file}
-            <li>
-                <a
-                    href="{data.currentPath.endsWith('/')
-                        ? data.currentPath
-                        : data.currentPath + '/'}{file.path}"
-                    data-sveltekit-reload="{file.isDir ? 'off' : true}">
-                    {file.path}
-                </a>
-            </li>
-        {/each}
-    </ul>
-    <div no-js-hidden class="file-grid">
-        {#each data.files as file}
-            {#if file.isDir}
-                <a
-                    class="item-card"
-                    href="{data.currentPath.endsWith('/')
-                        ? data.currentPath
-                        : data.currentPath + '/'}{file.path}">
-                    <div class="thumb-container"></div>
-                    <span>{file.path}</span>
-                </a>
+    <div no-js-shown>
+        <ul no-js-shown>
+            {#each data.dirList.files as file}
+                <li>
+                    <a
+                        href="{data.currentPath.endsWith('/')
+                            ? data.currentPath
+                            : data.currentPath + '/'}{file.path}"
+                        data-sveltekit-reload="{file.isDir ? 'off' : true}">
+                        {file.path}
+                    </a>
+                </li>
+            {/each}
+        </ul>
+        <div class="pager">
+            {#if data.dirList.page > 1}
+                <a href="?page={data.dirList.page - 1}">Previous Page</a>
             {:else}
-                <button class="item-card" on:click="{() => console.log('meh!')}">
-                    <div class="thumb-container">
-                        <object
-                            title="thumbnail"
-                            data="{thumbPrefixPath}/?thumb={file.path}"
-                            type="image/png">
-                            <!-- <img
-                                src="https://via.placeholder.com/256x256?text=No+thumb"
-                                alt="default-thumbnail" /> -->
-                            <span> err </span>
-                        </object>
-                    </div>
-                    <span>{file.path}</span>
-                </button>
+                <span></span>
             {/if}
-        {/each}
+            {#if data.dirList.page < data.dirList.totalPages}
+                <a href="?page={data.dirList.page + 1}">Next Page</a>
+            {:else}
+                <span></span>
+            {/if}
+        </div>
+    </div>
+    <div no-js-hidden>
+        <div class="file-grid">
+            {#each data.dirList.files as file}
+                {#if file.isDir}
+                    <a
+                        class="item-card"
+                        href="{data.currentPath.endsWith('/')
+                            ? data.currentPath
+                            : data.currentPath + '/'}{file.path}">
+                        <div class="thumb-container"></div>
+                        <span>{file.path}</span>
+                    </a>
+                {:else}
+                    <button class="item-card" on:click="{() => console.log('meh!')}">
+                        <div class="thumb-container">
+                            <img
+                                src="{thumbPrefixPath}/?thumb={file.path}"
+                                alt="default-thumbnail"
+                                class="thumb-img" />
+                        </div>
+                        <span>{file.path}</span>
+                    </button>
+                {/if}
+            {/each}
+        </div>
+        <div class="pager">
+            {#if data.dirList.page > 1}
+                <a href="?page={data.dirList.page - 1}">Previous Page</a>
+            {:else}
+                <span></span>
+            {/if}
+            {#if data.dirList.page < data.dirList.totalPages}
+                <a href="?page={data.dirList.page + 1}">Next Page</a>
+            {:else}
+                <span></span>
+            {/if}
+        </div>
     </div>
 </section>
 
 <style lang="postcss">
+img:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: inherit;
+    height: inherit;
+    background: var(--card-background) url('http://via.placeholder.com/100?text=PlaceHolder') no-repeat center;
+    color: transparent;
+}
+
 .file-grid {
     display: grid;
     width: 100%;
@@ -70,10 +103,11 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
 }
 
 .item-card {
+    --card-background: firebrick;
     overflow: hidden;
     min-height: 4em;
     position: relative;
-    background-color: firebrick;
+    background-color: var(--card-background);
     place-items: center;
     aspect-ratio: 1/1;
     padding: 0;
@@ -92,6 +126,7 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
 
 .thumb-container {
     width: 100%;
+    height: 100%;
     display: grid;
     place-items: center;
     position: absolute;
@@ -100,5 +135,12 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
         height: 100%;
         object-fit: cover;
     }
+}
+
+.pager {
+    width: 100%;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
 }
 </style>
