@@ -1,5 +1,8 @@
 <script lang="ts">
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
+import { onMount } from 'svelte';
 import type { PageData } from './$types';
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
@@ -9,6 +12,47 @@ const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
 // in SSR more, internal url-handling handles api-fetching
 const thumbHost = import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true' ? `http://${apiHost}:${apiPort}` : '';
 $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.currentPath}`;
+
+// $: files = (() => {
+//     console.log($page.url);
+//     return data.dirList.files;
+// })();
+
+let files = data.dirList.files || [];
+let path: string | undefined = data.currentPath;
+let page = data.dirList.page;
+$: {
+    if (path === data.currentPath) {
+        if (page > data.dirList.page) {
+            files = data.dirList.files;
+            files = files;
+        }
+        files.push(...data.dirList.files.filter((file) => !files.includes(file)));
+        files = files;
+    } else {
+        files = data.dirList.files;
+        path = data.currentPath;
+    }
+    page = data.dirList.page;
+}
+if (browser) {
+    if (files.length <= 100 && data.dirList.page > 1) {
+        void goto('?page=1', {
+            replaceState: true,
+            invalidateAll: true
+        });
+    }
+}
+
+const handleInfScroll = (e: Event) => {
+    const tgt = e.target as HTMLElement;
+    if (tgt?.scrollTop >= tgt?.scrollHeight - tgt?.offsetHeight - 2 * 256) {
+        void goto(`?page=${data.dirList.page + 1}`, {
+            replaceState: true,
+            noScroll: true
+        });
+    }
+};
 </script>
 
 <svelte:head>
@@ -16,10 +60,10 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
     <meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
+<section on:scroll="{handleInfScroll}">
     <div no-js-shown>
         <ul no-js-shown>
-            {#each data.dirList.files as file}
+            {#each files as file}
                 <li>
                     <a
                         href="{data.currentPath.endsWith('/')
@@ -46,7 +90,7 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
     </div>
     <div no-js-hidden>
         <div class="file-grid">
-            {#each data.dirList.files as file}
+            {#each files as file}
                 {#if file.isDir}
                     <a
                         class="item-card"
@@ -60,6 +104,7 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
                     <button class="item-card" on:click="{() => console.log('meh!')}">
                         <div class="thumb-container">
                             <img
+                                loading="lazy"
                                 src="{thumbPrefixPath}/?thumb={file.path}"
                                 alt="default-thumbnail"
                                 class="thumb-img" />
@@ -69,22 +114,33 @@ $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.current
                 {/if}
             {/each}
         </div>
-        <div class="pager">
-            {#if data.dirList.page > 1}
-                <a href="?page={data.dirList.page - 1}">Previous Page</a>
-            {:else}
-                <span></span>
-            {/if}
+        <div class="load-more-container">
             {#if data.dirList.page < data.dirList.totalPages}
-                <a href="?page={data.dirList.page + 1}">Next Page</a>
+                <!-- <a href="?page={data.dirList.page + 1}">Load more</a> -->
+                <button
+                    on:click="{() => {
+                        void goto(`?page=${data.dirList.page + 1}`, {
+                            replaceState: true,
+                            noScroll: true
+                        });
+                    }}">
+                    Load more
+                </button>
             {:else}
-                <span></span>
+                <span>You've reached the end</span>
             {/if}
         </div>
     </div>
 </section>
 
 <style lang="postcss">
+section {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 1em;
+}
+
 img:after {
     content: '';
     position: absolute;
@@ -142,5 +198,11 @@ img:after {
     padding: 1em;
     display: flex;
     justify-content: space-between;
+}
+
+.load-more-container {
+    padding: 1em;
+    display: grid;
+    place-items: center;
 }
 </style>

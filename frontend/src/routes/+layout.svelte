@@ -29,12 +29,14 @@ export let data: LayoutData;
     inset: 0;
     overflow: hidden;
     display: grid;
-    grid-template-rows: min-content auto;
-    gap: 1em;
+    grid-template-rows: min-content 1fr;
 }
 
 main {
-    padding: 1em;
-    overflow: auto;
+    padding: 0em;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
 }
 </style>
