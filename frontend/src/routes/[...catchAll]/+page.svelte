@@ -1,6 +1,14 @@
 <script lang="ts">
+import { env } from '$env/dynamic/public';
 import type { PageData } from './$types';
 export let data: PageData;
+const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
+const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
+
+// in SPA mode thumbs need to be fetched from api
+// in SSR more, internal url-handling handles api-fetching
+const thumbHost = import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true' ? `http://${apiHost}:${apiPort}` : '';
+$: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.currentPath}`;
 </script>
 
 <svelte:head>
@@ -36,21 +44,15 @@ export let data: PageData;
             {:else}
                 <button class="item-card" on:click="{() => console.log('meh!')}">
                     <div class="thumb-container">
-                        <!-- <picture>
-                            <source media="(min-width:300px)" srcset="/{file.path}" />
-                            <img src="/{file.path}?thumb" alt="{file.path}" />
-                        </picture> -->
-                        {#if data.thumbs[file.path]}
-                            {#await data.thumbs[file.path]}
-                                <span>Loading thumb...</span>
-                            {:then thumb}
-                                <img src="{thumb}" alt="{file.path}" />
-                            {:catch err}
-                                <span>{JSON.stringify(err)}</span>
-                            {/await}
-                        {:else}
-                            <span>No thumb!</span>
-                        {/if}
+                        <object
+                            title="thumbnail"
+                            data="{thumbPrefixPath}/?thumb={file.path}"
+                            type="image/png">
+                            <!-- <img
+                                src="https://via.placeholder.com/256x256?text=No+thumb"
+                                alt="default-thumbnail" /> -->
+                            <span> err </span>
+                        </object>
                     </div>
                     <span>{file.path}</span>
                 </button>
