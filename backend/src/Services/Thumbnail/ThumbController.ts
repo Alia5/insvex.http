@@ -4,7 +4,8 @@ import { fullResolve } from '../../utils';
 import { existsSync, mkdirSync, statSync, writeFileSync, readFileSync, unlink } from 'fs';
 import { watch } from 'chokidar';
 import { resolve } from 'path';
-import { generateAsync } from 'filepreview_ts';
+import process, { addProcessor } from 'thumbnailator';
+import { writeFile } from 'fs/promises';
 
 export class ThumbController extends Controller {
 
@@ -32,13 +33,27 @@ export class ThumbController extends Controller {
         }
 
         this.installWatchers();
+
+        // TODO: hack! remove this
+        setInterval(() => {
+            void this.writeThumbIndex(false);
+        }, 10000);
+
+
     }
 
-    private writeThumbIndex() {
-        writeFileSync(
-            resolve(fullResolve(this.config.thumbDir), ThumbController.THUMB_INDEX_NAME),
-            JSON.stringify(this.thumbIndex)
-        );
+    private writeThumbIndex(sync = true) {
+        if (sync) {
+            writeFileSync(
+                resolve(fullResolve(this.config.thumbDir), ThumbController.THUMB_INDEX_NAME),
+                JSON.stringify(this.thumbIndex)
+            );
+        } else {
+            return writeFile(
+                resolve(fullResolve(this.config.thumbDir), ThumbController.THUMB_INDEX_NAME),
+                JSON.stringify(this.thumbIndex)
+            );
+        }
     }
 
     private installWatchers() {
@@ -52,7 +67,7 @@ export class ThumbController extends Controller {
                 return;
             }
             this.logger.debug('Installing watcher for directory ', dir);
-            watch(dir, { ignoreInitial: true }).on('all', (event, path) => {
+            watch(dir, { ignoreInitial: true, alwaysStat: false, usePolling: true, interval: 30000 }).on('all', (event, path) => {
                 // this.logger.debug(`File ${path} changed, event: ${event}`);
                 switch (event) {
                     case 'unlink':
@@ -60,7 +75,6 @@ export class ThumbController extends Controller {
                             this.logger.info('File', path, 'was deleted, removing thumb');
                             unlink(this.thumbIndex[path], () => undefined);
                             delete this.thumbIndex[path];
-                            this.writeThumbIndex();
                         }
                         break;
                     case 'change': {
@@ -82,25 +96,31 @@ export class ThumbController extends Controller {
     }
 
     public async getThumb(path: string): Promise<string> {
-        const singleFileName = path.replace(/\//g, '_');
-        const thumbPath = resolve(fullResolve(this.config.thumbDir), singleFileName + '.png');
+        const thumbFileName = Buffer.from(path).toString('base64');
+        const thumbPath = resolve(fullResolve(this.config.thumbDir), thumbFileName + '.png');
+        if (this.thumbIndex[path] === 'error') {
+            throw new Error('Thumb generation not possible');
+        }
         if (this.thumbIndex[path] && existsSync(this.thumbIndex[path])) {
             this.logger.info('Thumb already exists, returning cached path', this.thumbIndex[path]);
             return this.thumbIndex[path];
         }
         try {
             this.logger.debug('Generating thumb for', path);
-            await generateAsync(path, thumbPath, {
+            await process(path, thumbPath, {
                 width: this.config.thumbSize,
-                height: this.config.thumbSize
+                height: this.config.thumbSize,
+                ignoreAspect: false,
+                crop: true,
+                thumbnail: true
             });
         } catch (e) {
             this.logger.error(e);
+            this.thumbIndex[path] = 'error';
             throw e;
         }
 
         this.thumbIndex[path] = thumbPath;
-        this.writeThumbIndex();
         return thumbPath;
     }
 
