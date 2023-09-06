@@ -6,6 +6,7 @@ import * as http from 'http';
 import folderListService from './Services/FilesList';
 import thumbService from './Services/Thumbnail';
 import { getConfig } from './config';
+import Database from 'better-sqlite3';
 dotenv.config();
 
 const main = async () => {
@@ -31,8 +32,11 @@ const main = async () => {
     setJwtSecrets('ChangeMySuperDuperSecret');
     setJwtOptions({  expiresIn: '1d' });
 
+    const db = new Database('thumbs.db');
+    db.pragma('journal_mode = WAL');
 
-    initServices([folderListService, thumbService], expressApp);
+
+    initServices([folderListService, thumbService], expressApp, undefined, db);
 
     if (frontend) {
         expressApp.use(frontend.handler);

@@ -1,59 +1,26 @@
 import { Controller } from 'fliessheck';
 import { InsvexConfig, getConfig } from '../../config';
 import { fullResolve } from '../../utils';
-import { existsSync, mkdirSync, statSync, writeFileSync, readFileSync, unlink } from 'fs';
+import { existsSync, mkdirSync, statSync, unlink } from 'fs';
 import { watch } from 'chokidar';
 import { resolve } from 'path';
-import process, { addProcessor } from 'thumbnailator';
-import { writeFile } from 'fs/promises';
+import process from 'thumbnailator';
+import { ThumbDbAdapter } from './DataBaseAdapter';
 
-export class ThumbController extends Controller {
+export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
 
-    private static readonly THUMB_INDEX_NAME = 'thumbs.json';
     private mappedDirs: string[];
     private config: InsvexConfig;
 
-    private thumbIndex: { [key: string]: string } = {};
-
-    public constructor() {
-        super(undefined, undefined);
+    public constructor(eventAdapter: undefined, databaseAdapter: ThumbDbAdapter) {
+        super(undefined, databaseAdapter);
         this.config = getConfig();
         this.mappedDirs = Object.values(this.config.hostDirMap).map(
             (dir) => fullResolve(dir)
         );
         mkdirSync(resolve(fullResolve(this.config.thumbDir)), { recursive: true });
 
-        const dbPath = resolve(fullResolve(this.config.thumbDir), ThumbController.THUMB_INDEX_NAME);
-        if (existsSync(dbPath)) {
-            try {
-                this.thumbIndex = (JSON.parse(readFileSync(dbPath).toString()) || {}) as { [key: string]: string };
-            } catch (e) {
-                this.logger.error('Couldn\'t read thumb index');
-            }
-        }
-
         this.installWatchers();
-
-        // TODO: hack! remove this
-        setInterval(() => {
-            void this.writeThumbIndex(false);
-        }, 10000);
-
-
-    }
-
-    private writeThumbIndex(sync = true) {
-        if (sync) {
-            writeFileSync(
-                resolve(fullResolve(this.config.thumbDir), ThumbController.THUMB_INDEX_NAME),
-                JSON.stringify(this.thumbIndex)
-            );
-        } else {
-            return writeFile(
-                resolve(fullResolve(this.config.thumbDir), ThumbController.THUMB_INDEX_NAME),
-                JSON.stringify(this.thumbIndex)
-            );
-        }
     }
 
     private installWatchers() {
@@ -70,15 +37,18 @@ export class ThumbController extends Controller {
             watch(dir, { ignoreInitial: true, alwaysStat: false, usePolling: true, interval: 30000 }).on('all', (event, path) => {
                 // this.logger.debug(`File ${path} changed, event: ${event}`);
                 switch (event) {
-                    case 'unlink':
-                        if (this.thumbIndex[path] !== undefined) {
+                    case 'unlink': {
+                        const thumbPath = this.databaseAdapter.getThumb(path);
+                        if (thumbPath !== undefined) {
                             this.logger.info('File', path, 'was deleted, removing thumb');
-                            unlink(this.thumbIndex[path], () => undefined);
-                            delete this.thumbIndex[path];
+                            unlink(thumbPath, () => undefined);
+                            this.databaseAdapter.removeThumb(path);
                         }
+                    }
                         break;
                     case 'change': {
-                        if (this.thumbIndex[path] !== undefined) {
+                        const thumbPath = this.databaseAdapter.getThumb(path);
+                        if (thumbPath !== undefined) {
                             this.getThumb(path)
                                 .then(() => undefined)
                                 .catch(() => {
@@ -96,15 +66,19 @@ export class ThumbController extends Controller {
     }
 
     public async getThumb(path: string): Promise<string> {
-        const thumbFileName = Buffer.from(path).toString('base64');
-        const thumbPath = resolve(fullResolve(this.config.thumbDir), thumbFileName + '.png');
-        if (this.thumbIndex[path] === 'error') {
+
+        const existingThumb = this.databaseAdapter.getThumb(path);
+        if (existingThumb && existingThumb !== 'error') {
+            this.logger.debug('using cached thumb path for', path);
+            return existingThumb;
+        }
+        if (existingThumb === 'error') {
             throw new Error('Thumb generation not possible');
         }
-        if (this.thumbIndex[path] && existsSync(this.thumbIndex[path])) {
-            this.logger.info('Thumb already exists, returning cached path', this.thumbIndex[path]);
-            return this.thumbIndex[path];
-        }
+
+
+        const thumbFileName = Buffer.from(path).toString('base64');
+        const thumbPath = resolve(fullResolve(this.config.thumbDir), thumbFileName + '.png');
         try {
             this.logger.debug('Generating thumb for', path);
             await process(path, thumbPath, {
@@ -116,11 +90,10 @@ export class ThumbController extends Controller {
             });
         } catch (e) {
             this.logger.error(e);
-            this.thumbIndex[path] = 'error';
+            void this.databaseAdapter.addThumb(path, 'error');
             throw e;
         }
-
-        this.thumbIndex[path] = thumbPath;
+        this.databaseAdapter.addThumb(path, thumbPath);
         return thumbPath;
     }
 

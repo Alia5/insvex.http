@@ -44,6 +44,7 @@ export default [
     external: [
         "insvex.http-frontend/handler",
         "./frontend/handler.js",
+        "better-sqlite3",
         ...(dev ? ["fliessheck"] : [])
     ],
     output: [
