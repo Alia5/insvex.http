@@ -2,8 +2,9 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
-import { onMount } from 'svelte';
 import type { PageData } from './$types';
+import { lookup } from 'mime-types';
+import PreviewPopup from './PreviewPopup.svelte';
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
@@ -53,6 +54,18 @@ const handleInfScroll = (e: Event) => {
         });
     }
 };
+
+const isImage = (file: string) => {
+    const mime = lookup(file.split('.')?.pop() || '');
+    if (mime) {
+        if (mime.startsWith('image')) {
+            return true;
+        }
+    }
+    return false;
+};
+
+let currentFile: string | undefined;
 </script>
 
 <svelte:head>
@@ -101,7 +114,12 @@ const handleInfScroll = (e: Event) => {
                         <span>{file.path}</span>
                     </a>
                 {:else}
-                    <button class="item-card" on:click="{() => console.log('meh!')}">
+                    <button
+                        class="item-card"
+                        on:click="{() => {
+                            isImage(file.path);
+                            currentFile = file.path;
+                        }}">
                         <div class="thumb-container">
                             <img
                                 loading="lazy"
@@ -131,6 +149,7 @@ const handleInfScroll = (e: Event) => {
             {/if}
         </div>
     </div>
+    <PreviewPopup bind:file="{currentFile}" />
 </section>
 
 <style lang="postcss">
