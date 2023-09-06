@@ -1,17 +1,16 @@
 {
-    "name": "insvex.http",
-    "version": "1.0.0",
-    "scripts": {
-      "setup": "pnpm i && pnpm run --filter ./Fliessheck build && pnpm run --filter ./frontend build && pnpm i && pnpm run --filter ./backend build",
-      "dev:fe": "pnpm run --filter ./frontend dev",
-      "dev:be": "pnpm run --filter ./backend dev",
-      "dev:fliessheck": "pnpm run --filter ./Fliessheck dev",
-      "dev": "concurrently \"pnpm run dev:fliessheck\" \"pnpm run dev:fe\" \"pnpm run dev:be\""
-    },
-    "keywords": [],
-    "author": "Peter Repukat - FlatspotSoftware",
-    "devDependencies": {
-      "concurrently": "^8.2.0"
-    }
+  "name": "insvex.http",
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "pnpm i && pnpm run --filter ./Fliessheck build && pnpm run --filter ./frontend build && pnpm i && pnpm run --filter ./backend build",
+    "dev:fe": "pnpm run --filter ./frontend dev",
+    "dev:be": "pnpm run --filter ./backend dev",
+    "dev:fliessheck": "pnpm run --filter ./Fliessheck dev",
+    "dev": "concurrently \"pnpm run dev:fliessheck\" \"pnpm run dev:fe\" \"pnpm run dev:be\""
+  },
+  "keywords": [],
+  "author": "Peter Repukat - FlatspotSoftware",
+  "devDependencies": {
+    "concurrently": "^8.2.1"
   }
-  
+}
