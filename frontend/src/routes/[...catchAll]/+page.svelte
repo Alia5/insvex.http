@@ -186,6 +186,9 @@ img:after {
     place-items: center;
     aspect-ratio: 1/1;
     padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 1em;
     & > span {
         width: 100%;
         text-align: center;
