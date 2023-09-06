@@ -6,6 +6,7 @@ import { watch } from 'chokidar';
 import { resolve } from 'path';
 import process from 'thumbnailator';
 import { ThumbDbAdapter } from './DataBaseAdapter';
+import { lookup } from 'mime-types';
 
 export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
 
@@ -72,10 +73,16 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
             this.logger.debug('using cached thumb path for', path);
             return existingThumb;
         }
-        if (existingThumb === 'error') {
-            throw new Error('Thumb generation not possible');
-        }
+        // if (existingThumb === 'error') {
+        //     throw new Error('Thumb generation not possible');
+        // }
 
+
+        const shouldCrop = () => {
+            const mime = lookup(path.split('.')?.pop() || '');
+            const noCrop = mime && mime.startsWith('video');
+            return !noCrop;
+        };
 
         const thumbFileName = Buffer.from(path).toString('base64');
         const thumbPath = resolve(fullResolve(this.config.thumbDir), thumbFileName + '.png');
@@ -85,7 +92,7 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
                 width: this.config.thumbSize,
                 height: this.config.thumbSize,
                 ignoreAspect: false,
-                crop: true,
+                crop: shouldCrop(),
                 thumbnail: true
             });
         } catch (e) {
