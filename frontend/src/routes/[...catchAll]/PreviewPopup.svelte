@@ -1,5 +1,9 @@
 <script context="module" lang="ts">
 export const SUPPORTED_MIMES = ['image', 'video', 'text'];
+// eslint-disable-next-line no-shadow, prettier/prettier
+export const supportsMimeType = (mime: string) => (
+    SUPPORTED_MIMES.some((m) => mime.includes(m))
+);
 </script>
 
 <script lang="ts">
@@ -13,9 +17,9 @@ export let file = '';
 
 $: mime = lookup(file.split('.')?.pop() || '');
 // svelte doesn't have switch blocks, so I instead opt for a bunch of separate blocks.....
-$: isImage = mime && mime?.startsWith('image');
-$: isVideo = mime && mime?.startsWith('video');
-$: isText = mime && mime?.startsWith('text');
+$: isImage = mime && mime?.includes('image');
+$: isVideo = mime && mime?.includes('video');
+$: isText = mime && mime?.includes('text');
 
 if (browser) {
     window.onkeydown = (event) => {
@@ -81,6 +85,8 @@ if (browser) {
     border-radius: 0;
     border: none;
     pointer-events: none;
+    isolation: isolate;
+    z-index: 2;
 }
 
 .container {

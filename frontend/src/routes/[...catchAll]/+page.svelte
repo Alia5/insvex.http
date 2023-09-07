@@ -4,7 +4,7 @@ import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 import type { PageData } from './$types';
 import { lookup } from 'mime-types';
-import PreviewPopup, { SUPPORTED_MIMES } from './PreviewPopup.svelte';
+import PreviewPopup, { SUPPORTED_MIMES, supportsMimeType } from './PreviewPopup.svelte';
 import Thumb from './Thumb.svelte';
 import LoadingSpinner from '../LoadingSpinner.svelte';
 export let data: PageData;
@@ -62,16 +62,10 @@ const handleInfScroll = (e: Event) => {
     }
 };
 
-const getMimeStart = (file: string) => {
-    const mime = lookup(file.split('.')?.pop() || '');
-    if (mime) {
-        return mime.split('/')[0];
-    }
-    return '';
-};
+const getMime = (file: string) => lookup(file.split('.')?.pop() || '');
 
 const isImage = (file: string) => {
-    const mimeStart = getMimeStart(file);
+    const mimeStart = (getMime(file) || '').split('/')[0];
     return mimeStart === 'image';
 };
 
@@ -114,7 +108,7 @@ let currentFile: string | undefined;
     <div no-js-hidden>
         <div class="file-grid">
             {#each files as file}
-                {#if file.isDir || !SUPPORTED_MIMES.includes(getMimeStart(file.path))}
+                {#if file.isDir || !supportsMimeType(getMime(file.path) || '')}
                     <a
                         class="item-card"
                         href="{data.currentPath.endsWith('/')
