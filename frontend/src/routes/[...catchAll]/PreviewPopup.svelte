@@ -1,4 +1,5 @@
 <script lang="ts">
+import { browser } from '$app/environment';
 import { lookup } from 'mime-types';
 import { fade, scale } from 'svelte/transition';
 
@@ -8,11 +9,13 @@ $: mime = lookup(file.split('.')?.pop() || '');
 $: isImage = mime && mime?.startsWith('image');
 $: isVideo = mime && mime?.startsWith('video');
 
-window.onkeydown = (event) => {
-    if (event.key === 'Escape') {
-        file = '';
-    }
-};
+if (browser) {
+    window.onkeydown = (event) => {
+        if (event.key === 'Escape') {
+            file = '';
+        }
+    };
+}
 </script>
 
 <div class="popup-container">
