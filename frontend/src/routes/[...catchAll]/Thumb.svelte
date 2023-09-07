@@ -6,12 +6,20 @@ export let prefixPath: string;
 export let isDir = false;
 
 $: iconSvg = getIcon(file).svg;
+
+let hideDefault = false;
 </script>
 
 <div class="thumb-container">
     <picture>
-        <img id="{file}" loading="lazy" src="{prefixPath}/?thumb={file}" alt="" class="thumb-img" />
-        <div class="default-thumb-container">
+        <img
+            id="{file}"
+            loading="lazy"
+            src="{prefixPath}/?thumb={file}"
+            alt=""
+            class="thumb-img"
+            on:load="{() => (hideDefault = true)}" />
+        <div class="default-thumb-container" style="{hideDefault ? 'display: none' : ''}">
             {#if isDir}
                 <div class="dir-thumb"></div>
             {:else}
@@ -45,13 +53,6 @@ picture {
     width: 100%;
     height: 100%;
 }
-/* picture,
-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 2;
-} */
 
 .default-thumb-container {
     position: absolute;
