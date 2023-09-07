@@ -57,8 +57,12 @@ if (browser) {
             {/if}
             {#if idPdf}
                 <!-- svelte-ignore a11y-missing-attribute -->
-                <object data="{`${fileUrl}#toolbar=1}`}" type="application/pdf" width="100%" height="100%"
-                ></object>
+                <object data="{`${fileUrl}#toolbar=1`}" type="application/pdf" width="100%" height="100%">
+                    <p>
+                        This browser does not support PDFs. <a href="{`${fileUrl}#toolbar=1`}"
+                            >Download PDF</a>
+                    </p>
+                </object>
             {/if}
             {#if isText}
                 {#await fetch(fileUrl)}
