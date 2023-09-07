@@ -1,4 +1,5 @@
 <script lang="ts">
+import { browser } from '$app/environment';
 import { getIcon } from 'material-file-icons';
 
 export let file: string;
@@ -7,7 +8,7 @@ export let isDir = false;
 
 $: iconSvg = getIcon(file).svg;
 
-let hideDefault = false;
+let thumbLoaded = false;
 </script>
 
 <div class="thumb-container">
@@ -18,8 +19,9 @@ let hideDefault = false;
             src="{prefixPath}/?thumb={file}"
             alt=""
             class="thumb-img"
-            on:load="{() => (hideDefault = true)}" />
-        <div class="default-thumb-container" style="{hideDefault ? 'display: none' : ''}">
+            style="{`${browser ? (!thumbLoaded ? 'opacity: 0;' : '') : ''}`}"
+            on:load="{() => (thumbLoaded = true)}" />
+        <div class="default-thumb-container" style="{thumbLoaded ? 'display: none' : ''}">
             {#if isDir}
                 <div class="dir-thumb"></div>
             {:else}
