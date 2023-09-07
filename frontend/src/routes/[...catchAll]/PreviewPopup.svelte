@@ -1,7 +1,7 @@
 <script lang="ts">
 import { browser } from '$app/environment';
 import { lookup } from 'mime-types';
-import { fade, scale } from 'svelte/transition';
+import { fade } from 'svelte/transition';
 import { scaleFromId } from './transition';
 
 export let file = '';
