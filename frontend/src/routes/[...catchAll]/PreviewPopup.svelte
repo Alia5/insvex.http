@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-export const SUPPORTED_MIMES = ['image', 'video', 'text'];
+export const SUPPORTED_MIMES = ['image', 'video', 'text', 'pdf'];
 // eslint-disable-next-line no-shadow, prettier/prettier
 export const supportsMimeType = (mime: string) => (
     SUPPORTED_MIMES.some((m) => mime.includes(m))
@@ -15,11 +15,14 @@ import { page } from '$app/stores';
 
 export let file = '';
 
+$: fileUrl = `${$page.url.pathname}${$page.url.pathname === '/' ? '' : '/'}${file}`;
+
 $: mime = lookup(file.split('.')?.pop() || '');
 // svelte doesn't have switch blocks, so I instead opt for a bunch of separate blocks.....
 $: isImage = mime && mime?.includes('image');
 $: isVideo = mime && mime?.includes('video');
 $: isText = mime && mime?.includes('text');
+$: idPdf = mime && mime?.includes('pdf');
 
 if (browser) {
     window.onkeydown = (event) => {
@@ -43,17 +46,22 @@ if (browser) {
             }}"></button>
         <div class="container" transition:scaleFromId="{{ id: file, duration: 250 }}">
             {#if isImage}
-                <img src="{file}" alt="preview" />
+                <img src="{fileUrl}" alt="preview" />
             {/if}
             {#if isVideo}
                 <!-- svelte-ignore a11y-media-has-caption -->
                 <video controls>
-                    <source src="{file}" type="{mime || ''}" />
+                    <source src="{fileUrl}" type="{mime || ''}" />
                     Your browser does not support the video tag.
                 </video>
             {/if}
+            {#if idPdf}
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <object data="{`${fileUrl}#toolbar=1}`}" type="application/pdf" width="100%" height="100%"
+                ></object>
+            {/if}
             {#if isText}
-                {#await fetch(`${$page.url.pathname}${$page.url.pathname === '/' ? '' : '/'}${file}`)}
+                {#await fetch(fileUrl)}
                     Loading...
                 {:then t}
                     {#if t.ok}
