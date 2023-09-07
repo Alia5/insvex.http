@@ -4,7 +4,8 @@ import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 import type { PageData } from './$types';
 import { lookup } from 'mime-types';
-import PreviewPopup from './PreviewPopup.svelte';
+import PreviewPopup, { SUPPORTED_MIMES } from './PreviewPopup.svelte';
+import Thumb from './Thumb.svelte';
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
@@ -55,14 +56,17 @@ const handleInfScroll = (e: Event) => {
     }
 };
 
-const isImage = (file: string) => {
+const getMimeStart = (file: string) => {
     const mime = lookup(file.split('.')?.pop() || '');
     if (mime) {
-        if (mime.startsWith('image')) {
-            return true;
-        }
+        return mime.split('/')[0];
     }
-    return false;
+    return '';
+};
+
+const isImage = (file: string) => {
+    const mimeStart = getMimeStart(file);
+    return mimeStart === 'image';
 };
 
 let currentFile: string | undefined;
@@ -104,13 +108,13 @@ let currentFile: string | undefined;
     <div no-js-hidden>
         <div class="file-grid">
             {#each files as file}
-                {#if file.isDir}
+                {#if file.isDir || !SUPPORTED_MIMES.includes(getMimeStart(file.path))}
                     <a
                         class="item-card"
                         href="{data.currentPath.endsWith('/')
                             ? data.currentPath
                             : data.currentPath + '/'}{file.path}">
-                        <div class="thumb-container"></div>
+                        <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
                         <span>{file.path}</span>
                     </a>
                 {:else}
@@ -120,14 +124,7 @@ let currentFile: string | undefined;
                             isImage(file.path);
                             currentFile = file.path;
                         }}">
-                        <div class="thumb-container">
-                            <img
-                                id="{file.path}"
-                                loading="lazy"
-                                src="{thumbPrefixPath}/?thumb={file.path}"
-                                alt="default-thumbnail"
-                                class="thumb-img" />
-                        </div>
+                        <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" />
                         <span>{file.path}</span>
                     </button>
                 {/if}
@@ -161,16 +158,6 @@ section {
     padding: 1em;
 }
 
-img:after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    width: inherit;
-    height: inherit;
-    background: var(--card-background) url('http://via.placeholder.com/100?text=PlaceHolder') no-repeat center;
-    color: transparent;
-}
-
 .file-grid {
     display: grid;
     width: 100%;
@@ -200,19 +187,6 @@ img:after {
         position: absolute;
         bottom: 0;
         background-color: #000000be;
-    }
-}
-
-.thumb-container {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    place-items: center;
-    position: absolute;
-    & > * {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
     }
 }
 

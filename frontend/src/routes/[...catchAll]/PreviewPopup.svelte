@@ -1,8 +1,13 @@
+<script context="module" lang="ts">
+export const SUPPORTED_MIMES = ['image', 'video', 'text'];
+</script>
+
 <script lang="ts">
 import { browser } from '$app/environment';
 import { lookup } from 'mime-types';
 import { fade } from 'svelte/transition';
 import { scaleFromId } from './transition';
+import { page } from '$app/stores';
 
 export let file = '';
 
@@ -10,6 +15,7 @@ $: mime = lookup(file.split('.')?.pop() || '');
 // svelte doesn't have switch blocks, so I instead opt for a bunch of separate blocks.....
 $: isImage = mime && mime?.startsWith('image');
 $: isVideo = mime && mime?.startsWith('video');
+$: isText = mime && mime?.startsWith('text');
 
 if (browser) {
     window.onkeydown = (event) => {
@@ -42,6 +48,23 @@ if (browser) {
                     Your browser does not support the video tag.
                 </video>
             {/if}
+            {#if isText}
+                {#await fetch(`${$page.url.pathname}${$page.url.pathname === '/' ? '' : '/'}${file}`)}
+                    Loading...
+                {:then t}
+                    {#if t.ok}
+                        {#await t.text()}
+                            Loading...
+                        {:then text}
+                            <textarea readonly>{text}</textarea>
+                        {:catch}
+                            Error
+                        {/await}
+                    {:else}
+                        Error
+                    {/if}
+                {/await}
+            {/if}
         </div>
     {/if}
 </div>
@@ -58,9 +81,6 @@ if (browser) {
     border-radius: 0;
     border: none;
     pointer-events: none;
-    & > * {
-        pointer-events: all;
-    }
 }
 
 .container {
@@ -68,11 +88,22 @@ if (browser) {
     place-items: center;
     max-width: calc(100% - 10em);
     max-height: calc(100% - 5em);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
     z-index: 1;
     & > * {
         max-width: 100%;
         max-height: 100%;
+        pointer-events: all;
     }
+}
+
+textarea {
+    resize: none;
+    width: 100%;
+    height: 100%;
+    padding: 1.5em;
 }
 
 .scrim {
@@ -86,5 +117,6 @@ if (browser) {
     pading: 0;
     z-index: 0;
     border-radius: 0;
+    pointer-events: all;
 }
 </style>
