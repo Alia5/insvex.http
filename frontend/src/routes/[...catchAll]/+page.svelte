@@ -178,7 +178,7 @@ section {
 }
 
 .item-card {
-    --card-background: firebrick;
+    --card-background: var(--cardColor);
     overflow: hidden;
     min-height: 4em;
     position: relative;
@@ -198,6 +198,7 @@ section {
         text-overflow: ellipsis;
         position: absolute;
         bottom: 0;
+        color: var(--textColorLight);
         background-color: #000000be;
     }
 }

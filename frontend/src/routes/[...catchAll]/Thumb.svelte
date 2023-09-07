@@ -68,7 +68,7 @@ picture {
     --height: 4em;
     --color: #cfcfcf;
     --border-radius: 0.5em;
-    --shadow: 0.2em 0.2em 0.2em #00000060;
+    --shadow: 0.2em 0.2em 0.2em var(--shadowColor);
     position: relative;
     width: var(--width);
     height: var(--height);
@@ -96,7 +96,7 @@ picture {
 
 .file-thumb {
     --color: #cfcfcf;
-    --shadow: 0.2em 0.2em 0.2em #00000060;
+    --shadow: 0.2em 0.2em 0.2em var(--shadowColor);
     width: 5.5em;
     height: 7em;
     position: relative;
@@ -124,7 +124,7 @@ picture {
     }
 
     & > span {
-        color: white;
+        color: var(--textColorLight);
         background: #627bf8;
         width: 100%;
         padding: 0.25rem;
