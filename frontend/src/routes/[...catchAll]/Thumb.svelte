@@ -7,7 +7,7 @@ export let file: string;
 export let prefixPath: string;
 export let isDir = false;
 
-$: iconSvg = getIcon(file).svg;
+const icon = getIcon(file);
 
 let thisImgEl: HTMLImageElement;
 let thumbLoaded = !browser;
@@ -16,6 +16,16 @@ onMount(() => {
         thumbLoaded = true;
     }
 });
+
+let fileIconColor = '#000000af';
+
+let maybeIconColor = icon.svg.match(/fill="([^"]+)"/)?.[1];
+if (maybeIconColor === 'none') {
+    maybeIconColor = icon.svg.match(/stroke="([^"]+)"/)?.[1];
+}
+if (maybeIconColor && maybeIconColor !== 'none') {
+    fileIconColor = maybeIconColor;
+}
 </script>
 
 <div class="thumb-container">
@@ -38,11 +48,12 @@ onMount(() => {
                 <div class="dir-thumb"></div>
             {:else}
                 <div class="file-thumb">
-                    <div>
+                    <div class="{`file-icon-${icon.name}`}">
                         <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                        {@html iconSvg}
+                        {@html icon.svg}
                     </div>
-                    <span>{(file.split('.')?.pop() || '').toUpperCase()}</span>
+                    <span style="{`--color: ${fileIconColor};`}"
+                        >{(file.split('.')?.pop() || '').toUpperCase()}</span>
                 </div>
             {/if}
         </div>
@@ -139,16 +150,14 @@ picture {
 
     & > span {
         color: var(--textColorLight);
-        background: #627bf8;
+        background: var(--color);
         width: 100%;
         padding: 0.25rem;
         text-align: center;
         font-weight: bold;
-        letter-spacing: 0.15em;
-        line-height: 1.5em;
         overflow: hidden;
-        font-size: 1em;
         text-overflow: ellipsis;
+        transition-property: none;
     }
 }
 

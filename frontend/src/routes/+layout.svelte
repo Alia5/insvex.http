@@ -3,6 +3,8 @@ import { onNavigate } from '$app/navigation';
 import type { LayoutData } from './$types';
 import Header from './Header.svelte';
 import './styles.pcss';
+import 'unfonts.css';
+import { links } from 'unplugin-fonts/head';
 
 export let data: LayoutData;
 
@@ -20,6 +22,11 @@ onNavigate((navigation) => {
 });
 </script>
 
+<svelte:head>
+    {#each links as link}
+        <link {...link?.attrs || {}} />
+    {/each}
+</svelte:head>
 <div class="app">
     <noscript style="display: none;">
         <style>

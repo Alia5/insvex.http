@@ -1,6 +1,7 @@
 <script lang="ts">
 import { browser } from '$app/environment';
-import IconMenu from '~icons/ic/baseline-menu';
+import { onMount } from 'svelte';
+import IconMenu from '~icons/material-symbols/menu';
 
 export let host: string;
 export let path: string;
@@ -8,13 +9,30 @@ export let path: string;
 const defaultDarkMode = !browser
     ? false
     : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-const toggleMode = () => {
+
+let darkMode = defaultDarkMode;
+const toggleTheme = () => {
     const body = document.querySelector('body');
     const hasTheme = body?.classList.contains('theme-dark') || body?.classList.contains('theme-light');
     const isDark = hasTheme ? body?.classList.contains('theme-dark') : defaultDarkMode;
     body?.classList.remove(isDark ? 'theme-dark' : 'theme-light');
     body?.classList.add(isDark ? 'theme-light' : 'theme-dark');
+    window.localStorage.setItem('theme', isDark ? 'light' : 'dark');
 };
+onMount(() => {
+    const userPrefTheme = window.localStorage.getItem('theme');
+    if (userPrefTheme === 'light') {
+        darkMode = false;
+    } else {
+        darkMode = defaultDarkMode;
+    }
+    if (defaultDarkMode && userPrefTheme === 'light') {
+        toggleTheme();
+    }
+    if (!defaultDarkMode && userPrefTheme === 'dark') {
+        toggleTheme();
+    }
+});
 </script>
 
 <header>
@@ -33,7 +51,12 @@ const toggleMode = () => {
         {/each}
     </div>
 
-    <input no-js-hidden type="checkbox" class="toggle" on:change="{toggleMode}" />
+    <input
+        no-js-hidden
+        type="checkbox"
+        class="toggle"
+        checked="{!darkMode}"
+        on:change="{() => toggleTheme()}" />
     <div no-js-shown>
         <p>Works best with Javascript enabled</p>
     </div>
@@ -45,7 +68,7 @@ header {
     background-color: var(--cardColor);
     box-shadow: 0 1em 1em 1em var(--shadowColor);
     display: grid;
-    padding: 1em;
+    padding-right: 1em;
     grid-template-columns: min-content auto min-content;
     gap: 1em;
 }
@@ -55,5 +78,42 @@ header {
     align-items: center;
     gap: 0.5em;
     flex-direction: row;
+}
+
+button {
+    margin: 0;
+    height: 100%;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    &:is(:hover, :focus, :active) {
+        border: none;
+        box-shadow: none;
+    }
+    &:hover {
+        background-color: color-mix(in srgb, var(--cardColor), white 20%);
+    }
+    & :global(svg) {
+        height: 100%;
+        width: auto;
+    }
+}
+
+input[type='checkbox']:is(.toggle) {
+    &:hover {
+        &::before {
+            border: 1px solid color-mix(in srgb, var(--textColor), transparent 30%);
+        }
+    }
+    &::after {
+        content: '🌙';
+        background-color: color-mix(in srgb, var(--cardColor), white 20%);
+    }
+    &:checked {
+        &::after {
+            content: '☀️';
+            left: calc(var(--toggle-width) - var(--toggle-height) + (var(--indicator-padding) / 2));
+        }
+    }
 }
 </style>

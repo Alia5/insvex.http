@@ -13,3 +13,4 @@ export {};
 
 import 'unplugin-icons/types/svelte';
 import './additional-svelte-typings';
+import 'unplugin-fonts/client';
