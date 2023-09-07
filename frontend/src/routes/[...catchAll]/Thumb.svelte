@@ -10,7 +10,7 @@ export let isDir = false;
 $: iconSvg = getIcon(file).svg;
 
 let thisImgEl: HTMLImageElement;
-let thumbLoaded = false;
+let thumbLoaded = !browser;
 onMount(() => {
     if (thisImgEl.complete && thisImgEl.naturalHeight > 1) {
         thumbLoaded = true;
@@ -31,7 +31,9 @@ onMount(() => {
                 thumbLoaded = true;
             }}"
             bind:this="{thisImgEl}" />
-        <div class="default-thumb-container" style="{thumbLoaded ? 'display: none' : ''}">
+        <div
+            class="default-thumb-container"
+            style="{browser ? (thumbLoaded ? 'opacity: 0;' : 'opacity: 1;') : 'opacity: 1;'}">
             {#if isDir}
                 <div class="dir-thumb"></div>
             {:else}
