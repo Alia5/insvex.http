@@ -1,4 +1,4 @@
-import { cubicIn, cubicOut } from 'svelte/easing';
+import { cubicIn } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 
 export const scaleFromId = (
