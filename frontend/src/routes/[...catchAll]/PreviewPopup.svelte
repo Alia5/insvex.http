@@ -2,6 +2,7 @@
 import { browser } from '$app/environment';
 import { lookup } from 'mime-types';
 import { fade, scale } from 'svelte/transition';
+import { scaleFromId } from './transition';
 
 export let file = '';
 
@@ -29,7 +30,7 @@ if (browser) {
                     file = '';
                 }
             }}"></button>
-        <div class="container" transition:scale="{{ duration: 200 }}">
+        <div class="container" transition:scaleFromId="{{ id: file, duration: 200 }}">
             {#if isImage}
                 <img src="{file}" alt="preview" />
             {/if}

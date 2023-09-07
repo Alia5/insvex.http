@@ -122,6 +122,7 @@ let currentFile: string | undefined;
                         }}">
                         <div class="thumb-container">
                             <img
+                                id="{file.path}"
                                 loading="lazy"
                                 src="{thumbPrefixPath}/?thumb={file.path}"
                                 alt="default-thumbnail"
