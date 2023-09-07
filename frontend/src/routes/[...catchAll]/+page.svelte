@@ -6,6 +6,7 @@ import type { PageData } from './$types';
 import { lookup } from 'mime-types';
 import PreviewPopup, { SUPPORTED_MIMES } from './PreviewPopup.svelte';
 import Thumb from './Thumb.svelte';
+import LoadingSpinner from '../LoadingSpinner.svelte';
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
@@ -45,13 +46,18 @@ if (browser) {
         });
     }
 }
+let loadingMore = false;
 
 const handleInfScroll = (e: Event) => {
     const tgt = e.target as HTMLElement;
     if (tgt?.scrollTop >= tgt?.scrollHeight - tgt?.offsetHeight - 2 * 256) {
+        if (loadingMore) return;
+        loadingMore = true;
         void goto(`?page=${data.dirList.page + 1}`, {
             replaceState: true,
             noScroll: true
+        }).finally(() => {
+            loadingMore = false;
         });
     }
 };
@@ -113,7 +119,8 @@ let currentFile: string | undefined;
                         class="item-card"
                         href="{data.currentPath.endsWith('/')
                             ? data.currentPath
-                            : data.currentPath + '/'}{file.path}">
+                            : data.currentPath + '/'}{file.path}"
+                        data-sveltekit-reload="{file.isDir ? 'off' : true}">
                         <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
                         <span>{file.path}</span>
                     </a>
@@ -133,17 +140,22 @@ let currentFile: string | undefined;
         <div class="load-more-container">
             {#if data.dirList.page < data.dirList.totalPages}
                 <!-- <a href="?page={data.dirList.page + 1}">Load more</a> -->
-                <button
-                    on:click="{() => {
-                        void goto(`?page=${data.dirList.page + 1}`, {
-                            replaceState: true,
-                            noScroll: true
-                        });
-                    }}">
-                    Load more
-                </button>
-            {:else}
-                <span>You've reached the end</span>
+                {#if !loadingMore}
+                    <button
+                        on:click="{() => {
+                            loadingMore = true;
+                            void goto(`?page=${data.dirList.page + 1}`, {
+                                replaceState: true,
+                                noScroll: true
+                            }).finally(() => {
+                                loadingMore = false;
+                            });
+                        }}">
+                        Load more
+                    </button>
+                {:else}
+                    <LoadingSpinner />
+                {/if}
             {/if}
         </div>
     </div>
