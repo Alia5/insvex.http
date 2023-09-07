@@ -189,6 +189,8 @@ section {
     border: none;
     outline: none;
     border-radius: 1em;
+    box-shadow: 0 1px 4px 0 var(--shadowColor);
+    transition-duration: 100ms;
     & > span {
         width: 100%;
         text-align: center;
@@ -200,6 +202,11 @@ section {
         bottom: 0;
         color: var(--textColorLight);
         background-color: #000000be;
+    }
+    &:hover {
+        scale: 1.033;
+        box-shadow: 0 1px 16px 4px #0000008b;
+        z-index: 1;
     }
 }
 
