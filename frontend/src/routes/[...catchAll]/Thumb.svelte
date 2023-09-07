@@ -1,6 +1,7 @@
 <script lang="ts">
 import { browser } from '$app/environment';
 import { getIcon } from 'material-file-icons';
+import { onMount } from 'svelte';
 
 export let file: string;
 export let prefixPath: string;
@@ -8,7 +9,13 @@ export let isDir = false;
 
 $: iconSvg = getIcon(file).svg;
 
+let thisImgEl: HTMLImageElement;
 let thumbLoaded = false;
+onMount(() => {
+    if (thisImgEl.complete && thisImgEl.naturalHeight > 1) {
+        thumbLoaded = true;
+    }
+});
 </script>
 
 <div class="thumb-container">
@@ -19,8 +26,11 @@ let thumbLoaded = false;
             src="{prefixPath}/?thumb={file}"
             alt=""
             class="thumb-img"
-            style="{`${browser ? (!thumbLoaded ? 'opacity: 0;' : '') : ''}`}"
-            on:load="{() => (thumbLoaded = true)}" />
+            style="{`opacity: ${thumbLoaded ? 1 : 0};`}"
+            on:load="{() => {
+                thumbLoaded = true;
+            }}"
+            bind:this="{thisImgEl}" />
         <div class="default-thumb-container" style="{thumbLoaded ? 'display: none' : ''}">
             {#if isDir}
                 <div class="dir-thumb"></div>
