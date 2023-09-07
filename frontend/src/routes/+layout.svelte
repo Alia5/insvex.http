@@ -1,9 +1,23 @@
 <script lang="ts">
+import { onNavigate } from '$app/navigation';
 import type { LayoutData } from './$types';
 import Header from './Header.svelte';
 import './styles.pcss';
 
 export let data: LayoutData;
+
+onNavigate((navigation) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (!(document as any).startViewTransition) return;
+
+    return new Promise((resolve) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (document as any).startViewTransition(async () => {
+            resolve();
+            await navigation.complete;
+        });
+    });
+});
 </script>
 
 <div class="app">
