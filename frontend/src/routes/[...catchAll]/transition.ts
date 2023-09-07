@@ -1,4 +1,4 @@
-import { cubicOut } from 'svelte/easing';
+import { cubicIn, cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 
 export const scaleFromId = (
@@ -29,7 +29,7 @@ export const scaleFromId = (
     return ({
         delay: params.delay || 0,
         duration: typeof params.duration === 'function' ? params.duration(d) : (params.duration || Math.sqrt(d) * 30),
-        easing: params.easing || cubicOut,
+        easing: params.easing || cubicIn,
         css: (t, u) => `
         opacity: ${t * opacity};
         transform: ${transform} translate(${u * dXY.x}px, ${u * dXY.y}px) scale(${t});

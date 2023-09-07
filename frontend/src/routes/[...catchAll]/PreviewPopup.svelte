@@ -7,6 +7,7 @@ import { scaleFromId } from './transition';
 export let file = '';
 
 $: mime = lookup(file.split('.')?.pop() || '');
+// svelte doesn't have switch blocks, so I instead opt for a bunch of separate blocks.....
 $: isImage = mime && mime?.startsWith('image');
 $: isVideo = mime && mime?.startsWith('video');
 
@@ -30,7 +31,7 @@ if (browser) {
                     file = '';
                 }
             }}"></button>
-        <div class="container" transition:scaleFromId="{{ id: file, duration: 200 }}">
+        <div class="container" transition:scaleFromId="{{ id: file, duration: 250 }}">
             {#if isImage}
                 <img src="{file}" alt="preview" />
             {/if}
