@@ -83,6 +83,18 @@ if (browser) {
             }
             file = '';
         }
+        if (event.key === 'ArrowLeft') {
+            if (currentItemIdx <= 0) {
+                return;
+            }
+            file = previewableItems[currentItemIdx - 1];
+        }
+        if (event.key === 'ArrowRight') {
+            if (currentItemIdx + 1 >= previewableItems.length) {
+                return;
+            }
+            file = previewableItems[currentItemIdx + 1];
+        }
     };
 }
 
