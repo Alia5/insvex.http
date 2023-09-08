@@ -16,7 +16,13 @@ const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
 
 // in SPA mode thumbs need to be fetched from api
 // in SSR more, internal url-handling handles api-fetching
-const thumbHost = import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true' ? `http://${apiHost}:${apiPort}` : '';
+let thumbHost = '';
+if (import.meta.env.INSVEX_BUILDCONFIG_SPA) {
+    thumbHost = `${!apiHost || apiHost?.startsWith('http') ? '' : 'http://'}${apiHost}${
+        apiPort ? ':' : ''
+    }${apiPort}`;
+}
+
 $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.currentPath}`;
 
 let files = data.dirList.files || [];

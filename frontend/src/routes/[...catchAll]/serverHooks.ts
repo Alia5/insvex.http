@@ -12,6 +12,9 @@ export const catchAllHandle: Handle = async (input) => {
         pageNum || undefined
     );
 
+    if (!fetchResponse) {
+        return input.resolve(input.event);
+    }
     // DirList is actually file...
     if (
         !fetchResponse.headers.get('Content-Type')?.includes('application/json')

@@ -28,4 +28,9 @@ const config = {
     }
 };
 
+if (process.env.INSVEX_BUILDCONFIG_SPA !== 'true' && process.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME) {
+    console.error('INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME is only compatible with SPA mode.')
+    process.exit(1);
+}
+
 export default config;

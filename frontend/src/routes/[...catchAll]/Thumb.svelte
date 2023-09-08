@@ -2,6 +2,8 @@
 import { browser } from '$app/environment';
 import { getIcon } from 'material-file-icons';
 import { onMount } from 'svelte';
+import { mimeAdditions } from './mime-patches';
+import { lookup } from 'mime-types';
 
 export let file: string;
 export let prefixPath: string;
@@ -9,10 +11,10 @@ export let isDir = false;
 
 const icon = getIcon(file);
 
-let thisImgEl: HTMLImageElement;
+let thisImgEl: HTMLImageElement | undefined;
 let thumbLoaded = !browser;
 onMount(() => {
-    if (thisImgEl.complete && thisImgEl.naturalHeight > 1) {
+    if (thisImgEl?.complete && thisImgEl?.naturalHeight > 1) {
         thumbLoaded = true;
     }
 });
@@ -26,21 +28,38 @@ if (maybeIconColor === 'none') {
 if (maybeIconColor && maybeIconColor !== 'none') {
     fileIconColor = maybeIconColor;
 }
+
+const fullImageThumbs = import.meta.env.INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS === 'true';
+let shouldShowThumbImg = true;
+/* eslint-disable prettier/prettier */
+if (
+    import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true'
+    && import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME
+) {
+    // NginX directory index mode
+    shouldShowThumbImg = false;
+}
+/* eslint-enable prettier/prettier */
+
+$: mime = mimeAdditions(file) || lookup(file.split('.')?.pop() || '');
+$: isImage = mime && mime?.includes('image');
 </script>
 
 <div class="thumb-container">
     <picture>
-        <img
-            id="{file}"
-            loading="lazy"
-            src="{prefixPath}/?thumb={file}"
-            alt=""
-            class="thumb-img"
-            style="{`opacity: ${thumbLoaded ? 1 : 0};`}"
-            on:load="{() => {
-                thumbLoaded = true;
-            }}"
-            bind:this="{thisImgEl}" />
+        {#if shouldShowThumbImg || (fullImageThumbs && isImage)}
+            <img
+                id="{file}"
+                loading="lazy"
+                src="{fullImageThumbs ? `/${file}` : `${prefixPath}/?thumb=${file}`}"
+                alt=""
+                class="thumb-img"
+                style="{`opacity: ${thumbLoaded ? 1 : 0};`}"
+                on:load="{() => {
+                    thumbLoaded = true;
+                }}"
+                bind:this="{thisImgEl}" />
+        {/if}
         <div
             class="default-thumb-container"
             style="{browser ? (thumbLoaded ? 'opacity: 0;' : 'opacity: 1;') : 'opacity: 1;'}">

@@ -415,7 +415,7 @@ afterUpdate(() => {
     outline: none;
     cursor: unset;
     margin: 0;
-    pading: 0;
+    padding: 0;
     z-index: -1;
     border-radius: 0;
     pointer-events: all;
