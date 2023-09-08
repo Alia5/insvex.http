@@ -36,7 +36,7 @@ onMount(() => {
 </script>
 
 <header>
-    <button no-js-hidden><IconMenu /></button>
+    <button no-js-hidden style="width: 0; padding: 0;"><IconMenu /></button>
     <div no-js-shown></div>
     <div class="breadcrumbs">
         <a href="/">{host}</a>
