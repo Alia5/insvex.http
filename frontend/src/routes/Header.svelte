@@ -47,6 +47,7 @@ onMount(() => {
                 const parts = arr.slice(0, idx + 1);
                 return parts.join('/');
             }) as part}
+            <span>/</span>
             <a href="/{part}">{part.split('/').pop()}</a>
         {/each}
     </div>
@@ -66,7 +67,7 @@ onMount(() => {
 header {
     height: 5em;
     background-color: var(--cardColor);
-    box-shadow: 0 1em 1em 1em var(--shadowColor);
+    box-shadow: 0 0.1em 0.3em 0em var(--shadowColor);
     display: grid;
     padding-right: 1em;
     grid-template-columns: min-content auto min-content;
@@ -76,8 +77,28 @@ header {
 .breadcrumbs {
     display: flex;
     align-items: center;
-    gap: 0.5em;
     flex-direction: row;
+
+    & > span {
+        padding: 0.25em;
+        z-index: 2;
+        font-weight: bold;
+    }
+    & > :first-child {
+        font-size: 1.25em;
+        padding: calc(1em * 0.75) 0.6em calc(1em * 0.75) 0.6em;
+    }
+    & a {
+        color: var(--textColor);
+        text-decoration: none;
+        font-weight: bold;
+        padding: 1em 0.6em 1em 0.6em;
+        border-radius: 0.5em;
+        &:hover {
+            text-decoration: none;
+            background-color: color-mix(in srgb, var(--textColor), transparent 80%);
+        }
+    }
 }
 
 button {
@@ -91,7 +112,7 @@ button {
         box-shadow: none;
     }
     &:hover {
-        background-color: color-mix(in srgb, var(--cardColor), white 20%);
+        background-color: color-mix(in srgb, var(--textColor), transparent 80%);
     }
     & :global(svg) {
         height: 100%;
