@@ -29,6 +29,7 @@ import ChevronRight from '~icons/material-symbols/chevron-right';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
 import { flip } from 'svelte/animate';
+import { afterUpdate } from 'svelte';
 
 export let file = '';
 export let previewableItems: string[] = [];
@@ -116,7 +117,7 @@ const calculateSizePrcnt = () => {
 
 const previewElementObserver = browser ? new ResizeObserver(calculateSizePrcnt) : undefined;
 /* eslint-disable prettier/prettier */
-$: {
+afterUpdate(() => {
     if (previewElement?.tagName === 'IMG') {
         previewElement.onload = () => {
             itemSizeStr = `${(previewElement as HTMLImageElement).naturalWidth} x ${
@@ -136,7 +137,7 @@ $: {
     if (previewElement) {
         previewElementObserver?.observe(previewElement);
     }
-};
+});
 /* eslint-enable prettier/prettier */
 </script>
 
