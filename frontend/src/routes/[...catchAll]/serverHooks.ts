@@ -13,7 +13,10 @@ export const catchAllHandle: Handle = async (input) => {
     );
 
     // DirList is actually file...
-    if (!fetchResponse.headers.get('Content-Type')?.includes('application/json')) {
+    if (
+        !fetchResponse.headers.get('Content-Type')?.includes('application/json')
+        || input.event.url.pathname.endsWith('.json')
+    ) {
         return new Response(
             fetchResponse.body,
             {
