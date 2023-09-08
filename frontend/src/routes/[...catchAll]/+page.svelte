@@ -4,11 +4,12 @@ import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 import type { PageData } from './$types';
 import { lookup } from 'mime-types';
-import PreviewPopup, { supportsMimeType } from './PreviewPopup.svelte';
+import PreviewPopup, { supportsMimeType as previewSupportsType } from './PreviewPopup.svelte';
 import LoadingSpinner from '../LoadingSpinner.svelte';
 import { onMount } from 'svelte';
 import ItemCard from './ItemCard.svelte';
 import { mimeAdditions } from './mime-patches';
+
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
@@ -86,7 +87,7 @@ onMount(() => {
 <section on:scroll="{handleInfScroll}">
     <div class="file-grid">
         {#each files as file (file.path)}
-            {#if file.isDir || !supportsMimeType(getMime(file.path) || '')}
+            {#if file.isDir || !previewSupportsType(getMime(file.path) || '')}
                 <ItemCard
                     link
                     file="{file}"
@@ -138,7 +139,13 @@ onMount(() => {
             <span></span>
         {/if}
     </div>
-    <PreviewPopup bind:file="{currentFile}" />
+    <!-- eslint-disable prettier/prettier -->
+    <PreviewPopup
+        bind:file="{currentFile}"
+        previewableItems="{files
+            .filter((f) => !f.isDir && previewSupportsType(getMime(f.path) || ''))
+            .map((f) => f.path)
+        }" />
 </section>
 
 <style lang="postcss">

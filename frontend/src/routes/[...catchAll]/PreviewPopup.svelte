@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+/* eslint-disable max-lines */
 import { isText as isTextCheck, mimeAdditions } from './mime-patches';
 export const SUPPORTED_MIMES = ['image', 'video', 'text', 'pdf'];
 // eslint-disable-next-line no-shadow, prettier/prettier
@@ -16,17 +17,21 @@ import { lookup } from 'mime-types';
 import { fade } from 'svelte/transition';
 import { scaleFromId } from './transition';
 import { page } from '$app/stores';
+import LoadingSpinner from '../LoadingSpinner.svelte';
 
 import CloseIcon from '~icons/material-symbols/close';
 import DownloadIcon from '~icons/material-symbols/download';
 import FullscreenIcon from '~icons/material-symbols/fullscreen';
 import FullscreenExitIcon from '~icons/material-symbols/fullscreen-exit';
-import LoadingSpinner from '../LoadingSpinner.svelte';
+import ChevronLeft from '~icons/material-symbols/chevron-left';
+import ChevronRight from '~icons/material-symbols/chevron-right';
 
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
 
 export let file = '';
+export let previewableItems: string[] = [];
+$: currentItemIdx = previewableItems.indexOf(file);
 
 let isFullscreen = false;
 
@@ -80,6 +85,47 @@ if (browser) {
         }
     };
 }
+
+let previewElement: HTMLElement | undefined;
+
+let itemSizeStr = '';
+let itemSizePrcnt = '';
+
+const calculateSizePrcnt = () => {
+    const fullSize = itemSizeStr.split(' x ').map((s) => parseInt(s, 10));
+    const elementSize = [previewElement?.clientWidth || 0, previewElement?.clientHeight || 0];
+    if (fullSize[0] && fullSize[1]) {
+        const sizePrcnt = [elementSize[0] / fullSize[0], elementSize[1] / fullSize[1]];
+        const minPrcnt = Math.min(...sizePrcnt);
+        itemSizePrcnt = `${Math.round(100 * minPrcnt)}%`;
+    }
+};
+
+const previewElementObserver = browser ? new ResizeObserver(calculateSizePrcnt) : undefined;
+/* eslint-disable prettier/prettier */
+$: {
+    if (previewElement?.tagName === 'IMG') {
+        previewElement.onload = () => {
+            itemSizeStr = `${(previewElement as HTMLImageElement).naturalWidth} x ${
+                (previewElement as HTMLImageElement).naturalHeight
+            }`;
+        };
+    }
+    if (previewElement?.tagName === 'VIDEO' && browser) {
+        previewElement.onloadedmetadata = () => {
+            itemSizeStr = `${(previewElement as HTMLVideoElement).videoWidth} x ${
+                (previewElement as HTMLVideoElement).videoHeight
+            }`;
+        };
+    }
+
+    calculateSizePrcnt();
+    if (previewElement) {
+        previewElementObserver?.observe(previewElement);
+    }
+};
+
+
 </script>
 
 <div class="popup-container {isFullscreen ? 'fullscreen' : ''}">
@@ -97,18 +143,23 @@ if (browser) {
             class="container {isFullscreen ? 'fullscreen' : ''}"
             transition:scaleFromId="{{ id: file, duration: 250 }}">
             {#if isImage}
-                <img src="{fileUrl}" alt="preview" />
+                <img src="{fileUrl}" alt="preview" bind:this="{previewElement}" />
             {/if}
             {#if isVideo}
                 <!-- svelte-ignore a11y-media-has-caption -->
-                <video controls>
+                <video controls bind:this="{previewElement}">
                     <source src="{fileUrl}" type="{mime || ''}" />
                     Your browser does not support the video tag.
                 </video>
             {/if}
             {#if idPdf}
                 <!-- svelte-ignore a11y-missing-attribute -->
-                <object data="{`${fileUrl}#toolbar=1`}" type="application/pdf" width="100%" height="100%">
+                <object
+                    bind:this="{previewElement}"
+                    data="{`${fileUrl}#toolbar=1`}"
+                    type="application/pdf"
+                    width="100%"
+                    height="100%">
                     <p>
                         This browser does not support PDFs. <a
                             data-sveltekit-reload
@@ -121,7 +172,9 @@ if (browser) {
                 {#await getHighlightedText(fileUrl)}
                     <LoadingSpinner color="white" />
                 {:then res}
-                    <div class="code-container {isFullscreen ? 'fullscreen' : ''}">
+                    <div
+                        bind:this="{previewElement}"
+                        class="code-container {isFullscreen ? 'fullscreen' : ''}">
                         <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                         <pre><code class="hljs">{@html res}</code></pre>
                     </div>
@@ -133,8 +186,25 @@ if (browser) {
             {/if}
         </div>
         <div class="infobox {isFullscreen ? 'fullscreen' : ''}">
-            <div></div>
+            <div class="file-info-container">
+                <span>{file}</span>
+                {#if previewElement && (isImage || isVideo)}
+                    <span>{itemSizeStr}</span>
+                    <span>{itemSizePrcnt}</span>
+                {/if}
+            </div>
             <div>
+                {#if previewableItems.length > 0}
+                <div class="item-cycler">
+                    <button class="bar-button" disabled={currentItemIdx <= 0} on:click={() => {
+                        file = previewableItems[currentItemIdx-1];
+                    }}><ChevronLeft /></button>
+                    <span>{currentItemIdx + 1} / {previewableItems.length}</span>
+                    <button class="bar-button" disabled={currentItemIdx+1 >= previewableItems.length} on:click={() => {
+                        file = previewableItems[currentItemIdx+1];
+                    }}><ChevronRight /></button>
+                </div>
+                {/if}
                 <button class="bar-button" on:click="{() => (isFullscreen = !isFullscreen)}">
                     {#if isFullscreen}
                         <div class="icon-wrapper" transition:fade="{{ duration: 100 }}">
@@ -159,7 +229,7 @@ if (browser) {
     position: absolute;
     inset: 0;
     display: grid;
-    grid-template-rows: auto min-content;
+    grid-template-rows: auto;
     place-items: center;
     margin: 0;
     padding: 0;
@@ -179,7 +249,7 @@ if (browser) {
 .container {
     display: grid;
     place-items: center;
-    padding: 2rem 8em 2rem 8em;
+    padding: 5rem 8em 5rem 8em;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -229,12 +299,13 @@ if (browser) {
     box-shadow: 0 -0.1em 0.3em 0em var(--shadowColor);
     display: grid;
     grid-template-columns: min-content auto min-content;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 0;
 
     &.fullscreen {
         --textColor: var(--textColorLight);
-        position: absolute;
-        bottom: 0;
-        background-color: #000000bd;
+        background-color: #00000096;
     }
 
     & > div {
@@ -252,6 +323,10 @@ if (browser) {
         padding: 0 1em 0 1em;
     }
     & .bar-button {
+        &[disabled] {
+            opacity: 0.5;
+            pointer-events: none;
+        }
         margin: 0;
         height: 100%;
         border: none;
@@ -276,6 +351,24 @@ if (browser) {
             width: 1.5em;
         }
     }
+}
+
+.item-cycler {
+    display: grid;
+    grid-auto-flow: column;
+    place-items: center;
+
+    & > span {
+        padding: 0 1em 0 1em;
+    }
+}
+
+.file-info-container {
+    display: grid;
+    place-items: center;
+    padding: 1em;
+    gap: 2em;
+    grid-auto-flow: column;
 }
 
 .scrim {
