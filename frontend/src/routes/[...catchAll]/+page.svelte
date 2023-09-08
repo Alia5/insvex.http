@@ -85,7 +85,7 @@ onMount(() => {
 
 <section on:scroll="{handleInfScroll}">
     <div class="file-grid">
-        {#each files as file}
+        {#each files as file (file.path)}
             {#if file.isDir || !supportsMimeType(getMime(file.path) || '')}
                 <ItemCard
                     link
