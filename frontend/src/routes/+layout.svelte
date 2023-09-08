@@ -31,7 +31,10 @@ onNavigate((navigation) => {
     <noscript style="display: none;">
         <style>
         *[no-js-hidden] {
-            display: none;
+            display: none !important;
+            &* {
+                display: none !important;
+            }
         }
         *[no-js-shown] {
             display: inherit;

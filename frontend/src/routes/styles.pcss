@@ -77,7 +77,10 @@
 
 
 *[no-js-shown] {
-    display: none;
+    display: none !important;
+    &* {
+        display: none !important;
+    }
 }
 
 *,
