@@ -128,16 +128,18 @@ onMount(() => {
         {/if}
     </div>
     <div class="pager" no-js-shown>
-        {#if data.dirList.page > 1}
-            <a href="?page={data.dirList.page - 1}">Previous Page</a>
-        {:else}
-            <span></span>
-        {/if}
-        {#if data.dirList.page < data.dirList.totalPages}
-            <a href="?page={data.dirList.page + 1}">Next Page</a>
-        {:else}
-            <span></span>
-        {/if}
+        <div>
+            {#if data.dirList.page > 1}
+                <a href="?page={data.dirList.page - 1}">Previous Page</a>
+            {:else}
+                <span></span>
+            {/if}
+            {#if data.dirList.page < data.dirList.totalPages}
+                <a href="?page={data.dirList.page + 1}">Next Page</a>
+            {:else}
+                <span></span>
+            {/if}
+        </div>
     </div>
     <!-- eslint-disable prettier/prettier -->
     <PreviewPopup
@@ -165,18 +167,20 @@ section {
 
 .pager {
     width: 100%;
-    padding: 1em;
-    display: flex;
-    justify-content: space-between;
-    & a {
-        color: var(--textColor);
-        text-decoration: none;
-        font-weight: bold;
-        padding: 1em 0.6em 1em 0.6em;
-        border-radius: 0.5em;
-        &:hover {
+    & > div {
+        padding: 1em;
+        display: flex;
+        justify-content: space-between;
+        & a {
+            color: var(--textColor);
             text-decoration: none;
-            background-color: color-mix(in srgb, var(--textColor), transparent 80%);
+            font-weight: bold;
+            padding: 1em 0.6em 1em 0.6em;
+            border-radius: 0.5em;
+            &:hover {
+                text-decoration: none;
+                background-color: color-mix(in srgb, var(--textColor), transparent 80%);
+            }
         }
     }
 }

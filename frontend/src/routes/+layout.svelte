@@ -37,7 +37,7 @@ onNavigate((navigation) => {
             }
         }
         *[no-js-shown] {
-            display: inherit;
+            display: inherit !important;
         }
         </style>
     </noscript>
