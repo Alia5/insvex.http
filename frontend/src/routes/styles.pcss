@@ -12,6 +12,7 @@
         --textColorLight: rgb(255 255 255 / 1);
         --textColorDark: rgb(0 0 0 / 0.95);
     }
+
 }
 
 @media (prefers-color-scheme: light) {
@@ -66,7 +67,7 @@
     --scrollBarWidth: 0.65rem;
 }
 
-*,
+*:not(svg):not(path),
 ::before,
 ::after {
     transition-property: all;
