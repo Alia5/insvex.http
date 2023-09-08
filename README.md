@@ -1,7 +1,6 @@
 <div style="display: grid; grid-template-rows: auto auto; place-items: center; width: 100%">
 <h1 align="center"><img align="center" src="insvex.http.png?raw=true" width="256" height="256" alt="insveX.http Logo" />&nbsp;&nbsp;insveX.http</h1>
-<br />
-<h1> a modern http server index</h1>
+<h1 align="center">a modern http server index</h1>
 </div>
 
 ## License
