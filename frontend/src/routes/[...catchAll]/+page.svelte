@@ -85,82 +85,78 @@ onMount(() => {
 </svelte:head>
 
 <section on:scroll="{handleInfScroll}">
-    <div no-js-shown>
-        <ul no-js-shown>
-            {#each files as file}
-                <li>
-                    <a
-                        href="{data.currentPath.endsWith('/')
-                            ? data.currentPath
-                            : data.currentPath + '/'}{file.path}"
-                        data-sveltekit-reload="{file.isDir ? 'off' : true}">
-                        {file.path}
-                    </a>
-                </li>
-            {/each}
-        </ul>
-        <div class="pager">
-            {#if data.dirList.page > 1}
-                <a href="?page={data.dirList.page - 1}">Previous Page</a>
+    <div class="file-grid">
+        {#each files as file}
+            {#if file.isDir || !supportsMimeType(getMime(file.path) || '')}
+                <a
+                    class="item-card"
+                    style="{isScrolling ? 'pointer-events: none' : ''}"
+                    href="{data.currentPath.endsWith('/')
+                        ? data.currentPath
+                        : data.currentPath + '/'}{file.path}"
+                    data-sveltekit-reload="{file.isDir ? 'off' : true}">
+                    <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
+                    <span>{file.path}</span>
+                </a>
             {:else}
-                <span></span>
+                <button
+                    no-js-hidden
+                    class="item-card"
+                    style="{isScrolling ? 'pointer-events: none' : ''}"
+                    on:click="{() => {
+                        isImage(file.path);
+                        currentFile = file.path;
+                    }}">
+                    <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" />
+                    <span>{file.path}</span>
+                </button>
+
+                <a
+                    no-js-shown
+                    class="item-card"
+                    style="{isScrolling ? 'pointer-events: none' : ''}"
+                    href="{data.currentPath.endsWith('/')
+                        ? data.currentPath
+                        : data.currentPath + '/'}{file.path}"
+                    data-sveltekit-reload="{file.isDir ? 'off' : true}">
+                    <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
+                    <span>{file.path}</span>
+                </a>
             {/if}
-            {#if data.dirList.page < data.dirList.totalPages}
-                <a href="?page={data.dirList.page + 1}">Next Page</a>
-            {:else}
-                <span></span>
-            {/if}
-        </div>
+        {/each}
     </div>
-    <div no-js-hidden>
-        <div class="file-grid">
-            {#each files as file}
-                {#if file.isDir || !supportsMimeType(getMime(file.path) || '')}
-                    <a
-                        class="item-card"
-                        style="{isScrolling ? 'pointer-events: none' : ''}"
-                        href="{data.currentPath.endsWith('/')
-                            ? data.currentPath
-                            : data.currentPath + '/'}{file.path}"
-                        data-sveltekit-reload="{file.isDir ? 'off' : true}">
-                        <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
-                        <span>{file.path}</span>
-                    </a>
-                {:else}
-                    <button
-                        class="item-card"
-                        style="{isScrolling ? 'pointer-events: none' : ''}"
-                        on:click="{() => {
-                            isImage(file.path);
-                            currentFile = file.path;
-                        }}">
-                        <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" />
-                        <span>{file.path}</span>
-                    </button>
-                {/if}
-            {/each}
-        </div>
-        <div class="load-more-container">
-            {#if data.dirList.page < data.dirList.totalPages}
-                <!-- <a href="?page={data.dirList.page + 1}">Load more</a> -->
-                {#if !loadingMore}
-                    <button
-                        on:click="{() => {
-                            loadingMore = true;
-                            void goto(`?page=${data.dirList.page + 1}`, {
-                                replaceState: true,
-                                noScroll: true
-                            }).finally(() => {
-                                loadingMore = false;
-                            });
-                        }}">
-                        Load more
-                    </button>
-                {:else}
-                    <LoadingSpinner />
-                {/if}
+    <div class="load-more-container" no-js-hidden>
+        {#if data.dirList.page < data.dirList.totalPages}
+            <!-- <a href="?page={data.dirList.page + 1}">Load more</a> -->
+            {#if !loadingMore}
+                <button
+                    on:click="{() => {
+                        loadingMore = true;
+                        void goto(`?page=${data.dirList.page + 1}`, {
+                            replaceState: true,
+                            noScroll: true
+                        }).finally(() => {
+                            loadingMore = false;
+                        });
+                    }}">
+                    Load more
+                </button>
+            {:else}
+                <LoadingSpinner />
             {/if}
-        </div>
+        {/if}
+    </div>
+    <div class="pager" no-js-shown>
+        {#if data.dirList.page > 1}
+            <a href="?page={data.dirList.page - 1}">Previous Page</a>
+        {:else}
+            <span></span>
+        {/if}
+        {#if data.dirList.page < data.dirList.totalPages}
+            <a href="?page={data.dirList.page + 1}">Next Page</a>
+        {:else}
+            <span></span>
+        {/if}
     </div>
     <PreviewPopup bind:file="{currentFile}" />
 </section>
@@ -218,6 +214,17 @@ section {
     padding: 1em;
     display: flex;
     justify-content: space-between;
+    & a {
+        color: var(--textColor);
+        text-decoration: none;
+        font-weight: bold;
+        padding: 1em 0.6em 1em 0.6em;
+        border-radius: 0.5em;
+        &:hover {
+            text-decoration: none;
+            background-color: color-mix(in srgb, var(--textColor), transparent 80%);
+        }
+    }
 }
 
 .load-more-container {

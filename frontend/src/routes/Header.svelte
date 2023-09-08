@@ -58,8 +58,8 @@ onMount(() => {
         class="toggle"
         checked="{!darkMode}"
         on:change="{() => toggleTheme()}" />
-    <div no-js-shown>
-        <p>Works best with Javascript enabled</p>
+    <div no-js-shown class="no-js-hint">
+        <span>Works best with Javascript enabled</span>
     </div>
 </header>
 
@@ -135,6 +135,14 @@ input[type='checkbox']:is(.toggle) {
             content: '☀️';
             left: calc(var(--toggle-width) - var(--toggle-height) + (var(--indicator-padding) / 2));
         }
+    }
+}
+
+.no-js-hint {
+    display: grid;
+    place-items: center;
+    & > span {
+        white-space: nowrap;
     }
 }
 </style>
