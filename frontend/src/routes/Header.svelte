@@ -46,7 +46,7 @@ onMount(() => {
             .map((p, idx, arr) => {
                 const parts = arr.slice(0, idx + 1);
                 return parts.join('/');
-            }) as part}
+            }) as part (part)}
             <span>/</span>
             <a href="/{part}">{part.split('/').pop()}</a>
         {/each}

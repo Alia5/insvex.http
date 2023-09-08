@@ -23,7 +23,7 @@ onNavigate((navigation) => {
 </script>
 
 <svelte:head>
-    {#each links as link}
+    {#each links as link (link)}
         <link {...link?.attrs || {}} />
     {/each}
 </svelte:head>
