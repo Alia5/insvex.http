@@ -8,6 +8,7 @@ import PreviewPopup, { supportsMimeType } from './PreviewPopup.svelte';
 import Thumb from './Thumb.svelte';
 import LoadingSpinner from '../LoadingSpinner.svelte';
 import { onMount } from 'svelte';
+import ItemCard from './ItemCard.svelte';
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
@@ -88,40 +89,21 @@ onMount(() => {
     <div class="file-grid">
         {#each files as file}
             {#if file.isDir || !supportsMimeType(getMime(file.path) || '')}
-                <a
-                    class="item-card"
-                    style="{isScrolling ? 'pointer-events: none' : ''}"
-                    href="{data.currentPath.endsWith('/')
-                        ? data.currentPath
-                        : data.currentPath + '/'}{file.path}"
-                    data-sveltekit-reload="{file.isDir ? 'off' : true}">
-                    <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
-                    <span>{file.path}</span>
-                </a>
+                <ItemCard
+                    link
+                    file="{file}"
+                    isScrolling="{isScrolling}"
+                    thumbPrefixPath="{thumbPrefixPath}"
+                    currentPath="{data.currentPath}" />
             {:else}
-                <button
-                    no-js-hidden
-                    class="item-card"
-                    style="{isScrolling ? 'pointer-events: none' : ''}"
+                <ItemCard
+                    file="{file}"
+                    isScrolling="{isScrolling}"
+                    thumbPrefixPath="{thumbPrefixPath}"
+                    currentPath="{data.currentPath}"
                     on:click="{() => {
-                        isImage(file.path);
                         currentFile = file.path;
-                    }}">
-                    <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" />
-                    <span>{file.path}</span>
-                </button>
-
-                <a
-                    no-js-shown
-                    class="item-card"
-                    style="{isScrolling ? 'pointer-events: none' : ''}"
-                    href="{data.currentPath.endsWith('/')
-                        ? data.currentPath
-                        : data.currentPath + '/'}{file.path}"
-                    data-sveltekit-reload="{file.isDir ? 'off' : true}">
-                    <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
-                    <span>{file.path}</span>
-                </a>
+                    }}" />
             {/if}
         {/each}
     </div>
@@ -174,39 +156,6 @@ section {
     width: 100%;
     grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
     gap: 1em;
-}
-
-.item-card {
-    --card-background: var(--cardColor);
-    overflow: hidden;
-    min-height: 4em;
-    position: relative;
-    background-color: var(--card-background);
-    place-items: center;
-    aspect-ratio: 1/1;
-    padding: 0;
-    border: none;
-    outline: none;
-    border-radius: 1em;
-    box-shadow: 0 1px 4px 0 var(--shadowColor);
-    transition-duration: 100ms;
-    & > span {
-        width: 100%;
-        text-align: center;
-        overflow: hidden;
-        padding: 1em;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        position: absolute;
-        bottom: 0;
-        color: var(--textColorLight);
-        background-color: #000000be;
-    }
-    &:hover {
-        scale: 1.033;
-        box-shadow: 0 1px 16px 4px #0000008b;
-        z-index: 1;
-    }
 }
 
 .pager {
