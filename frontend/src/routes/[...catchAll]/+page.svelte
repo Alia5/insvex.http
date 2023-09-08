@@ -5,10 +5,10 @@ import { env } from '$env/dynamic/public';
 import type { PageData } from './$types';
 import { lookup } from 'mime-types';
 import PreviewPopup, { supportsMimeType } from './PreviewPopup.svelte';
-import Thumb from './Thumb.svelte';
 import LoadingSpinner from '../LoadingSpinner.svelte';
 import { onMount } from 'svelte';
 import ItemCard from './ItemCard.svelte';
+import { mimeAdditions } from './mime-patches';
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
@@ -59,11 +59,9 @@ const handleInfScroll = (e: Event) => {
     }
 };
 
-const getMime = (file: string) => lookup(file.split('.')?.pop() || '');
-
-const isImage = (file: string) => {
-    const mimeStart = (getMime(file) || '').split('/')[0];
-    return mimeStart === 'image';
+const getMime = (file: string) => {
+    const addition = mimeAdditions(file);
+    return addition || lookup(file.split('.')?.pop() || '');
 };
 
 let currentFile: string | undefined;

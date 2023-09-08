@@ -220,6 +220,12 @@ importers:
       axios:
         specifier: ^1.5.0
         version: 1.5.0
+      highlight.js:
+        specifier: ^11.8.0
+        version: 11.8.0
+      highlightjs-line-numbers.js:
+        specifier: ^2.8.0
+        version: 2.8.0
       material-file-icons:
         specifier: ^2.4.0
         version: 2.4.0
@@ -5264,6 +5270,15 @@ packages:
       inherits: 2.0.4
       minimalistic-assert: 1.0.1
     dev: true
+
+  /highlight.js@11.8.0:
+    resolution: {integrity: sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==}
+    engines: {node: '>=12.0.0'}
+    dev: false
+
+  /highlightjs-line-numbers.js@2.8.0:
+    resolution: {integrity: sha512-TEf1gw0c8mb8nan0QwliqS7obT4cpUd9hzsGzsZLweteNnWea/VIqy5/aQqsa5wnz9lnvmtAkS1ZtDTjB/goYQ==}
+    dev: false
 
   /hmac-drbg@1.0.1:
     resolution: {integrity: sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==}
