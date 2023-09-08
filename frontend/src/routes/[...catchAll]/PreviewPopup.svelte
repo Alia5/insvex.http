@@ -14,7 +14,7 @@ export const supportsMimeType = (mime: string) => {
 <script lang="ts">
 import { browser } from '$app/environment';
 import { lookup } from 'mime-types';
-import { crossfade, fade, fly } from 'svelte/transition';
+import { fade } from 'svelte/transition';
 import { scaleFromId } from './transition';
 import { page } from '$app/stores';
 import LoadingSpinner from '../LoadingSpinner.svelte';
@@ -28,7 +28,6 @@ import ChevronRight from '~icons/material-symbols/chevron-right';
 
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
-import { flip } from 'svelte/animate';
 import { afterUpdate } from 'svelte';
 
 export let file = '';
