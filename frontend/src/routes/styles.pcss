@@ -22,8 +22,8 @@
         --colorPrimary: #273346;
         --colorPrimaryHover: #273a55;
         --colorPrimaryActive: #35598b;
-        --cardColor: #e9e9e9;
-        --backgroundColor: #f4f4f4;
+        --cardColor: #f7f7f7;
+        --backgroundColor: #dbe4e4;
         --shadowColor: #00000030;
         --textColorLight: rgb(255 255 255 / 1);
         --textColorDark: rgb(0 0 0 / 0.95);
@@ -51,8 +51,8 @@
     --colorPrimary: #273346;
     --colorPrimaryHover: #273a55;
     --colorPrimaryActive: #35598b;
-    --cardColor: #e9e9e9;
-    --backgroundColor: #f4f4f4;
+    --cardColor: #f7f7f7;
+    --backgroundColor: #dbe4e4;
     --shadowColor: #00000030;
     --textColorLight: rgb(255 255 255 / 1);
     --textColorDark: rgb(0 0 0 / 0.95);
@@ -60,6 +60,10 @@
 
 :root {
     --transitionDuration: 0.25s;
+
+    --scrollbarBG: hsl(0 0% 50% / 0.1);
+    --thumbBG: hsl(0 0% 50% / 0.5);
+    --scrollBarWidth: 0.65rem;
 }
 
 *,
@@ -68,7 +72,7 @@
     transition-property: all;
     transition-duration: var(--transitionDuration);
     transition-timing-function: ease-in-out;
-    transition-delay: 0s;
+    transition-delay: 0.01ms;
 }
 
 
@@ -131,6 +135,22 @@ body {
         Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+
+::-webkit-scrollbar {
+    width: var(--scrollBarWidth);
+    height: var(--scrollBarWidth);}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+    border-radius: 100vw;
+    margin-block: 0.5em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG);
+    border-radius: 100vw;
 }
 
 p {
