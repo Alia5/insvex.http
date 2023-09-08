@@ -207,6 +207,7 @@ if (browser) {
     display: grid;
     align-items: center;
     & > pre {
+        font-size: 1.25em;
         padding: 3em;
         width: 100%;
     }
