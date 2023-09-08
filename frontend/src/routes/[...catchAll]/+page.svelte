@@ -4,9 +4,10 @@ import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 import type { PageData } from './$types';
 import { lookup } from 'mime-types';
-import PreviewPopup, { SUPPORTED_MIMES, supportsMimeType } from './PreviewPopup.svelte';
+import PreviewPopup, { supportsMimeType } from './PreviewPopup.svelte';
 import Thumb from './Thumb.svelte';
 import LoadingSpinner from '../LoadingSpinner.svelte';
+import { onMount } from 'svelte';
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
@@ -15,11 +16,6 @@ const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
 // in SSR more, internal url-handling handles api-fetching
 const thumbHost = import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true' ? `http://${apiHost}:${apiPort}` : '';
 $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.currentPath}`;
-
-// $: files = (() => {
-//     console.log($page.url);
-//     return data.dirList.files;
-// })();
 
 let files = data.dirList.files || [];
 let path: string | undefined = data.currentPath;
@@ -70,6 +66,17 @@ const isImage = (file: string) => {
 };
 
 let currentFile: string | undefined;
+
+let isScrolling = false;
+onMount(() => {
+    window.onscroll = () => (isScrolling = true);
+
+    setInterval(() => {
+        if (isScrolling) {
+            isScrolling = false;
+        }
+    }, 100);
+});
 </script>
 
 <svelte:head>
@@ -111,6 +118,7 @@ let currentFile: string | undefined;
                 {#if file.isDir || !supportsMimeType(getMime(file.path) || '')}
                     <a
                         class="item-card"
+                        style="{isScrolling ? 'pointer-events: none' : ''}"
                         href="{data.currentPath.endsWith('/')
                             ? data.currentPath
                             : data.currentPath + '/'}{file.path}"
@@ -121,6 +129,7 @@ let currentFile: string | undefined;
                 {:else}
                     <button
                         class="item-card"
+                        style="{isScrolling ? 'pointer-events: none' : ''}"
                         on:click="{() => {
                             isImage(file.path);
                             currentFile = file.path;
