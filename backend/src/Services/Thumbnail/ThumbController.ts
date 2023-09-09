@@ -73,10 +73,9 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
             this.logger.debug('using cached thumb path for', path);
             return existingThumb;
         }
-        // if (existingThumb === 'error') {
-        //     throw new Error('Thumb generation not possible');
-        // }
-
+        if (existingThumb === 'error') {
+            throw new Error('Thumb generation not possible');
+        }
 
         const shouldCrop = () => {
             const mime = lookup(path.split('.')?.pop() || '');
