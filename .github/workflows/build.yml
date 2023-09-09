@@ -42,6 +42,12 @@ jobs:
           INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
           INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''
           INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: SSR
+          path: backend/dist
+          retention-days: 30
 
   build-SPA:
     runs-on: ubuntu-latest
@@ -57,7 +63,7 @@ jobs:
           node-version: 19
       - run: git submodule update --init --recursive    
       - run: pnpm run setup
-      - run: pnpm run build:spa
+      - run: pnpm run build
         env:
           INSVEX_HOST: ''
           INSVEX_PORT: ''
@@ -69,6 +75,18 @@ jobs:
           INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
           INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''
           INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+      - name: 'Upload Artifact (API)'
+        uses: actions/upload-artifact@v3
+        with:
+          name: SPA-API
+          path: backend/dist
+          retention-days: 30
+      - name: 'Upload Artifact (SPA)'
+        uses: actions/upload-artifact@v3
+        with:
+          name: SPA
+          path: frontend/build
+          retention-days: 30
 
   build-SPA-NginX-AUTOINDEX:
     runs-on: ubuntu-latest
@@ -96,3 +114,9 @@ jobs:
           INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
           INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: 'index.json'
           INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+      - name: 'Upload Artifact (SPA-AUTOINDEX)'
+        uses: actions/upload-artifact@v3
+        with:
+          name: SPA-NginX-AUTOINDEX
+          path: frontend/build
+          retention-days: 30
