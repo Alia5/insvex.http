@@ -1,10 +1,37 @@
 <div style="display: grid; grid-template-rows: auto auto; place-items: center; width: 100%">
-<h1 align="center"><img align="center" src="insvex.http.png?raw=true" width="256" height="256" alt="insveX.http Logo" />&nbsp;&nbsp;insveX.http</h1>
+<h1 align="center"><img align="center" src="insvex.http.png?raw=true" width="256" height="256" alt="insveX.http Logo" />&nbsp;&nbsp;insvex.http</h1>
 <h1 align="center">a modern http server index</h1>
 </div>
 
-## License
+insvex.http is a modern, simple and ⚡-fast http server index built with [svelte](https://svelte.dev)[-kit](https://kit.svelte.dev)
 
+It can be configured to run as a standalone http- / file-server with SSR server with SSR (server side rendering) or run as SPA (single page application)  
+<sub>Thanks, SvelteKit ❤️!</sub>
+
+Regardless of the configuration, insvex.http can (and should be) used in conjunction with your already existing webserver, like nginx.
+
+When using nginx and insvex.http configured as SPA, there isn't even a need to run a node.js server, although thumbnail generation may suffer.
+
+![screenshot](screenie.png?raw=true)
+## Features
+
+- [x] modern, simple and ⚡-fast
+- [x] responsive design
+- [x] (optional) standalone server
+- [x] SSR (server side rendering)
+- [x] works with javascript disabled in SSR mode
+- [x] SPA mode
+- [x] optionally doesn't require node.js
+- [x] thumbnail generation
+- [x] extensive file preview
+  - [x] synatax highlightin when previewing code
+- [ ] directory tree
+- [ ] qr code generation
+- [ ] search
+- [ ] http**s** in standalone mode  
+  (recommended to use nginx for now)
+
+## License
 ```license
 Copyright 2017-2023 Peter Repukat - FlatspotSoftware
 
