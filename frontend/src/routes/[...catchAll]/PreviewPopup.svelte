@@ -359,6 +359,7 @@ afterUpdate(() => {
     white-space: nowrap;
     position: absolute;
     bottom: 0;
+    z-index: 9;
 
     &.fullscreen {
         --textColor: var(--textColorLight);
