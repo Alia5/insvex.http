@@ -28,7 +28,7 @@ import ChevronRight from '~icons/material-symbols/chevron-right';
 
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
-import { afterUpdate } from 'svelte';
+import { afterUpdate, onMount } from 'svelte';
 
 export let file = '';
 export let previewableItems: string[] = [];
@@ -45,6 +45,10 @@ $: isVideo = mime && mime?.includes('video');
 // eslint-disable-next-line prettier/prettier
 $: isText = mime && isTextCheck(mime);
 $: idPdf = mime && mime?.includes('pdf');
+
+let isPortrait = browser ? (window?.screen?.height > window?.screen?.width ? true : false) : false;
+
+$: console.log(isPortrait);
 
 const getHighlightedText = async (url: string) => {
     try {
@@ -99,6 +103,12 @@ if (browser) {
     };
 }
 
+onMount(() => {
+    window.onresize = () => {
+        isPortrait = window?.screen?.height > window?.screen?.width ? true : false;
+    };
+});
+
 let previewElement: HTMLElement | undefined;
 
 let itemSizeStr = '';
@@ -152,7 +162,7 @@ afterUpdate(() => {
                 file = '';
             }}"></button>
         <div
-            class="container {isFullscreen ? 'fullscreen' : ''}"
+            class="container {isFullscreen ? 'fullscreen' : ''} {isPortrait ? 'portrait' : ''}"
             transition:scaleFromId="{{ id: file, duration: 250 }}">
             {#if isImage}
                 {#key file}
@@ -218,24 +228,24 @@ afterUpdate(() => {
                     <span>{itemSizePrcnt}</span>
                 {/if}
             </div>
+            {#if previewableItems.length > 0}
+                <div class="item-cycler">
+                    <button
+                        class="bar-button"
+                        disabled="{currentItemIdx <= 0}"
+                        on:click="{() => {
+                            file = previewableItems[currentItemIdx - 1];
+                        }}"><ChevronLeft /></button>
+                    <span>{currentItemIdx + 1} / {previewableItems.length}</span>
+                    <button
+                        class="bar-button"
+                        disabled="{currentItemIdx + 1 >= previewableItems.length}"
+                        on:click="{() => {
+                            file = previewableItems[currentItemIdx + 1];
+                        }}"><ChevronRight /></button>
+                </div>
+            {/if}
             <div>
-                {#if previewableItems.length > 0}
-                    <div class="item-cycler">
-                        <button
-                            class="bar-button"
-                            disabled="{currentItemIdx <= 0}"
-                            on:click="{() => {
-                                file = previewableItems[currentItemIdx - 1];
-                            }}"><ChevronLeft /></button>
-                        <span>{currentItemIdx + 1} / {previewableItems.length}</span>
-                        <button
-                            class="bar-button"
-                            disabled="{currentItemIdx + 1 >= previewableItems.length}"
-                            on:click="{() => {
-                                file = previewableItems[currentItemIdx + 1];
-                            }}"><ChevronRight /></button>
-                    </div>
-                {/if}
                 <button class="bar-button" on:click="{() => (isFullscreen = !isFullscreen)}">
                     {#if isFullscreen}
                         <div class="icon-wrapper" transition:fade="{{ duration: 100 }}">
@@ -303,6 +313,9 @@ afterUpdate(() => {
         padding: 0;
         background-color: black;
     }
+    &.portrait {
+        padding: 0;
+    }
 }
 
 .code-container {
@@ -333,8 +346,10 @@ afterUpdate(() => {
     width: 100%;
     background-color: var(--cardColor);
     box-shadow: 0 -0.1em 0.3em 0em var(--shadowColor);
-    display: grid;
-    grid-template-columns: min-content auto min-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
     white-space: nowrap;
     position: absolute;
     bottom: 0;
@@ -349,10 +364,11 @@ afterUpdate(() => {
         flex-direction: row;
     }
     & > :first-child {
-        grid-column: 1 / span 1;
+        justify-content: space-evenly;
     }
     & > :last-child {
-        grid-column: 3 / span 1;
+        justify-content: end;
+        flex-wrap: wrap;
     }
 
     & a {
@@ -393,6 +409,8 @@ afterUpdate(() => {
     display: grid;
     grid-auto-flow: column;
     place-items: center;
+    flex: 1;
+    justify-content: end;
 
     & > span {
         padding: 0 1em 0 1em;

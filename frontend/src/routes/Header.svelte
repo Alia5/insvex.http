@@ -78,6 +78,9 @@ header {
     display: flex;
     align-items: center;
     flex-direction: row;
+    overflow: hidden;
+
+    white-space: nowrap;
 
     & > span {
         padding: 0.25em;
@@ -88,12 +91,27 @@ header {
         font-size: 1.25em;
         padding: calc(1em * 0.75) 0.6em calc(1em * 0.75) 0.6em;
     }
+
+    & > :last-child {
+        white-space: nowrap;
+    }
+    & > :first-child {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    & > :not(:first-child, :last-child) {
+        overflow: hidden;
+    }
+
     & a {
         color: var(--textColor);
         text-decoration: none;
         font-weight: bold;
         padding: 1em 0.6em 1em 0.6em;
         border-radius: 0.5em;
+        text-overflow: ellipsis;
         &:hover {
             text-decoration: none;
             background-color: color-mix(in srgb, var(--textColor), transparent 80%);
