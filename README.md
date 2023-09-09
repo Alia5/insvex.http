@@ -1,9 +1,13 @@
-<div style="display: grid; grid-template-rows: auto auto; place-items: center; width: 100%">
-<h1 align="center"><img align="center" src="insvex.http.png?raw=true" width="256" height="256" alt="insveX.http Logo" />&nbsp;&nbsp;insvex.http</h1>
-<h1 align="center">a modern http server index</h1>
-</div>
+<img align="right" src="insvex.http.png?raw=true" width="256" height="256" alt="insveX.http Logo" />
 
-insvex.http is a modern, simple and ⚡-fast http server index built with [svelte](https://svelte.dev)[-kit](https://kit.svelte.dev)
+<br />
+
+# insvex.http 
+
+## modern, simple and ⚡-fast http server index built with [svelte](https://svelte.dev)[-kit](https://kit.svelte.dev)
+
+<br />
+<br />
 
 It can be configured to run as a standalone http- / file-server with SSR (server side rendering)  
 *or* run as SPA (single page application)  
