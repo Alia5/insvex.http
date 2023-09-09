@@ -188,7 +188,7 @@ afterUpdate(() => {
                         type="application/pdf"
                         width="100%"
                         height="100%">
-                        <p>
+                        <p class="no-pdf-support">
                             This browser does not support PDFs. <a
                                 data-sveltekit-reload
                                 target="_blank"
@@ -209,8 +209,14 @@ afterUpdate(() => {
                             transition:fade
                             bind:this="{previewElement}"
                             class="code-container {isFullscreen ? 'fullscreen' : ''}">
-                            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                            <pre><code class="hljs">{@html res}</code></pre>
+                            <!-- eslint-disable svelte/no-at-html-tags -->
+                            <pre><code
+                                    class="hljs"
+                                    contenteditable="true"
+                                    style="outline: transparent;"
+                                    on:keypress="{(e) => {
+                                        e.preventDefault();
+                                    }}">{@html res}</code></pre>
                         </div>
                     {:catch err}
                         <span transition:fade>
@@ -423,6 +429,16 @@ afterUpdate(() => {
     padding: 1em;
     gap: 2em;
     grid-auto-flow: column;
+}
+
+.no-pdf-support {
+    background-color: var(--cardColor);
+    position: absolute;
+    padding: 1em;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .scrim {
