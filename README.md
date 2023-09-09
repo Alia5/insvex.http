@@ -5,7 +5,8 @@
 
 insvex.http is a modern, simple and ⚡-fast http server index built with [svelte](https://svelte.dev)[-kit](https://kit.svelte.dev)
 
-It can be configured to run as a standalone http- / file-server with SSR server with SSR (server side rendering) or run as SPA (single page application)  
+It can be configured to run as a standalone http- / file-server with SSR (server side rendering)  
+*or* run as SPA (single page application)  
 <sub>Thanks, SvelteKit ❤️!</sub>
 
 Regardless of the configuration, insvex.http can (and should be) used in conjunction with your already existing webserver, like nginx.
@@ -26,7 +27,7 @@ When using nginx and insvex.http configured as SPA, there isn't even a need to r
 - [x] extensive file preview
   - [x] synatax highlightin when previewing code
 - [ ] directory tree
-- [ ] qr code generation
+- [ ] QR-code generation
 - [ ] search
 - [ ] http**s** in standalone mode  
   (recommended to use nginx for now)
