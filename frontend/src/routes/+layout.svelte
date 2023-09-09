@@ -26,6 +26,7 @@ onNavigate((navigation) => {
     {#each links as link (link)}
         <link {...link?.attrs || {}} />
     {/each}
+    <title>index of {data.host}</title>
 </svelte:head>
 <div class="app">
     <noscript style="display: none;">

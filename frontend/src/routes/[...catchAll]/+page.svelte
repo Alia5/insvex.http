@@ -88,7 +88,6 @@ onMount(() => {
 </script>
 
 <svelte:head>
-    <title>Home</title>
     <meta name="description" content="Insvex.http" />
 </svelte:head>
 
