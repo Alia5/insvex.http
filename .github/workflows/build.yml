@@ -75,6 +75,7 @@ jobs:
           INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
           INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''
           INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+      - run: rm -rf backend/dist/frontend
       - name: 'Upload Artifact (API)'
         uses: actions/upload-artifact@v3
         with:
