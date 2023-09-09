@@ -11,7 +11,9 @@ It can be configured to run as a standalone http- / file-server with SSR (server
 
 Regardless of the configuration, insvex.http can (and should be) used in conjunction with your already existing webserver, like nginx.
 
-When using nginx and insvex.http configured as SPA, there isn't even a need to run a node.js server, although thumbnail generation may suffer.
+When using nginx and insvex.http configured as SPA, there isn't even a need to run a node.js server, although thumbnail generation may suffer.  
+In fact, with the right nginx-config (sample provided) insvex.http can **work without any dependencies**!  
+Configure nginx, drop in SPA files and you're *done*!
 
 ![screenshot](screenie.png?raw=true)
 ## Features
