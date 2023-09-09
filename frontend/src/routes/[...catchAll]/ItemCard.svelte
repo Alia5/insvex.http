@@ -1,4 +1,5 @@
 <script lang="ts">
+import { page } from '$app/stores';
 import type { DirList } from '$lib/api/fetchDirListOrFile';
 import Thumb from './Thumb.svelte';
 import { createEventDispatcher } from 'svelte';
@@ -19,7 +20,10 @@ export let currentPath: string;
         href="{currentPath.endsWith('/') ? currentPath : currentPath + '/'}{file.path}"
         data-sveltekit-reload="{file.isDir ? 'off' : true}">
         <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
-        <span>{file.path}</span>
+        <span
+            >{file.path === '..'
+                ? $page.url?.toString()?.split('/')?.slice(-2, -1)?.[0] || '..'
+                : file.path}</span>
     </a>
 {:else}
     <button

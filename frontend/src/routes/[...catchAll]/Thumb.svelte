@@ -5,6 +5,8 @@ import { onMount } from 'svelte';
 import { mimeAdditions } from './mime-patches';
 import { lookup } from 'mime-types';
 
+import BackArrow from '~icons/material-symbols/subdirectory-arrow-left';
+
 export let file: string;
 export let prefixPath: string;
 export let isDir = false;
@@ -64,7 +66,11 @@ $: isImage = mime && mime?.includes('image');
             class="default-thumb-container"
             style="{browser ? (thumbLoaded ? 'opacity: 0;' : 'opacity: 1;') : 'opacity: 1;'}">
             {#if isDir}
-                <div class="dir-thumb"></div>
+                <div class="dir-thumb">
+                    {#if file === '..'}
+                        <BackArrow class="backarrow" />
+                    {/if}
+                </div>
             {:else}
                 <div class="file-thumb">
                     <div class="{`file-icon-${icon.name}`}">
@@ -187,5 +193,16 @@ picture {
     width: 100%;
     height: 100%;
     text-indent: -100vh;
+}
+
+:global(.backarrow) {
+    width: 100%;
+    height: 100%;
+    padding: 0.5em;
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    color: var(--textColorDark);
+    opacity: 0.6;
 }
 </style>

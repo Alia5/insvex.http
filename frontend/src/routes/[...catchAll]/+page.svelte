@@ -93,6 +93,19 @@ onMount(() => {
 
 <section on:scroll="{handleInfScroll}">
     <div class="file-grid">
+        {#if data.path !== '/'}
+            {#key '..'}
+                <ItemCard
+                    link
+                    file="{{
+                        isDir: true,
+                        path: '..'
+                    }}"
+                    isScrolling="{isScrolling}"
+                    thumbPrefixPath="{thumbPrefixPath}"
+                    currentPath="{data.currentPath}" />
+            {/key}
+        {/if}
         {#each files as file (file.path)}
             {#if file.isDir || !previewSupportsType(getMime(file.path) || '')}
                 <ItemCard
