@@ -82,9 +82,9 @@ Before installation, you should decide if you want to run insvex.http with SSR o
 3. Install dependencies
     ```bash
     # ubuntu
-    sudo apt install nodejs ffmpeg graphicsmagick libreoffice
+    sudo apt install nodejs ffmpeg graphicsmagick libreoffice ghostscript
     # arch
-    sudo pacman -S nodejs ffmpeg graphicsmagick libreoffice
+    sudo pacman -S nodejs ffmpeg graphicsmagick libreoffice ghostscript
     ```
 4. cd into the directory where you copied the `SSR`-files
 5. edit `config.json` to your liking
