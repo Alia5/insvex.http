@@ -25,7 +25,6 @@ export const fetchDirListOrFile = async (forHost: string, path: string, thumbNam
         if (thumbName) {
             return undefined;
         }
-        console.log(path);
         fetchUrl = `${
             !host || host?.startsWith('http') ? '' : 'http://'
         }${host || ''}${port ? ':' : ''}${port || ''}${path === '/' ? '' : path}/${import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME}`;
