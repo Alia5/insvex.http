@@ -2,7 +2,7 @@
   "name": "insvex.http",
   "version": "1.0.0",
   "scripts": {
-    "setup": "pnpm i && pnpm run --filter ./Fliessheck build && pnpm run --filter ./frontend build && pnpm i && pnpm run --filter ./backend build",
+    "setup": "pnpm i --no-frozen-lockfile && pnpm run --filter ./Fliessheck build && pnpm run --filter ./frontend build && pnpm i --no-frozen-lockfile && pnpm run --filter ./backend build",
     
     "lint:fe": "pnpm run --filter ./frontend lint",
     "lint:be": "pnpm run --filter ./backend lint",

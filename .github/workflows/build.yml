@@ -5,12 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
           version: 7.26.3
       - uses: actions/setup-node@v2
         with:
-          node-version: 19
+          node-version: 19   
       - run: pnpm run setup
       - run: pnpm run lint:ci
 
@@ -18,12 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
           version: 7.26.3
       - uses: actions/setup-node@v2
         with:
           node-version: 19
+      - run: git submodule update --init --recursive    
       - run: pnpm run setup
       - run: pnpm run build
         env:
@@ -42,12 +47,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
           version: 7.26.3
       - uses: actions/setup-node@v2
         with:
           node-version: 19
+      - run: git submodule update --init --recursive    
       - run: pnpm run setup
       - run: pnpm run build:spa
         env:
@@ -66,12 +74,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
           version: 7.26.3
       - uses: actions/setup-node@v2
         with:
           node-version: 19
+      - run: git submodule update --init --recursive    
       - run: pnpm run setup
       - run: pnpm run build:spa
         env:
