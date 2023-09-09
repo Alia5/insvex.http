@@ -54,6 +54,8 @@ Before installation, you should decide if you want to run insvex.http with SSR o
   - requires clientside javascript
   - no pagination
 
+#### Setup
+
 1. configure nginx according to the [provided sample config](/sample-SPA_NGINX_AUTOINDEX.nginx.site.conf)
 2. Drop the files of the `SPA-NginX-AUTOINDEX`-artifact into your webroot
 
@@ -67,6 +69,8 @@ Before installation, you should decide if you want to run insvex.http with SSR o
 
 **Cons:**
   - dependencies
+
+#### Setup
 
 1. configure nginx according to the [provided sample config](/sample-SSR.nginx.site.conf)
 2. copy the files of the `SSR`-artifact into any directory, but **not** into your webroot
