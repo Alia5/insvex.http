@@ -49,7 +49,7 @@ jobs:
         with:
           node-version: 19
       - run: pnpm run setup
-      - run: pnpm run build
+      - run: pnpm run build:spa
         env:
           INSVEX_HOST: ''
           INSVEX_PORT: ''
@@ -73,7 +73,7 @@ jobs:
         with:
           node-version: 19
       - run: pnpm run setup
-      - run: pnpm run build
+      - run: pnpm run build:spa
         env:
           INSVEX_HOST: ''
           INSVEX_PORT: ''
