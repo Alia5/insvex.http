@@ -64,6 +64,8 @@ Before installation, you should decide if you want to run insvex.http with SSR o
 1. configure nginx according to the [provided sample config](/sample-SPA_NGINX_AUTOINDEX.nginx.site.conf)
 2. Drop the files of the `SPA-NginX-AUTOINDEX`-artifact into your webroot
 
+---
+
 ### SSR
 
 **Pros:**
