@@ -6,7 +6,14 @@
     "dev:fe": "pnpm run --filter ./frontend dev",
     "dev:be": "pnpm run --filter ./backend dev",
     "dev:fliessheck": "pnpm run --filter ./Fliessheck dev",
-    "dev": "concurrently \"pnpm run dev:fliessheck\" \"pnpm run dev:fe\" \"pnpm run dev:be\""
+
+    "dev": "concurrently \"pnpm run dev:fliessheck\" \"pnpm run dev:fe\" \"pnpm run dev:be\"",
+
+    "build:fe": "pnpm run --filter ./frontend build",
+    "build:be": "pnpm run --filter ./backend build",
+    "build:fliessheck": "pnpm run --filter ./Fliessheck build",
+
+    "build": "concurrently \"pnpm run build:fliessheck\" \"pnpm run build:fe\" \"pnpm run build:be\""
   },
   "keywords": [],
   "author": "Peter Repukat - FlatspotSoftware",
