@@ -32,7 +32,29 @@ When using nginx and insvex.http configured as SPA, there isn't even a need to r
 - [ ] http**s** in standalone mode  
   (recommended to use nginx for now)
 
+## Installation
+
+```
+TODO
+```
+
+## Development
+
+```bash
+# pnpm as package manager is encouraged, to install:
+corepack enable && corepack prepare pnpm@latest
+# corepack comes bundled with node.js, so no need to install it
+
+
+git clone git@github.com:Alia5/insvex.http.git
+git submodule update --init --recursive
+cd insvex.http
+pnpm install
+pnpm run dev
+```
+
 ## License
+
 ```license
 Copyright 2017-2023 Peter Repukat - FlatspotSoftware
 
