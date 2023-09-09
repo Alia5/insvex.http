@@ -62,7 +62,7 @@ export default [
       {
         dir: `dist`,
         format: "es",
-        sourcemap: "inline",
+        sourcemap: process.env.NODE_ENV !== 'production' ? "inline" : false,
       },
     ],
   },
