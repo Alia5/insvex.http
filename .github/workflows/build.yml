@@ -32,8 +32,8 @@ jobs:
       - run: pnpm run setup
       - run: pnpm run build
         env:
-          INSVEX_HOST: 'localhost'
-          INSVEX_PORT: '3000'
+          INSVEX_HOST: ''
+          INSVEX_PORT: ''
           INSVEX_HOST_DIR_MAP: '{ "*": "." }'
           INSVEX_ALLOWED_DIRS: '*'
           INSVEX_THUMB_DIR: thumbs
