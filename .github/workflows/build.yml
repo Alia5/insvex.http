@@ -1,0 +1,87 @@
+name: build
+on: [push]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.26.3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 19
+      - run: pnpm run setup
+      - run: pnpm run lint:ci
+
+  build-SSR:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.26.3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 19
+      - run: pnpm run setup
+      - run: pnpm run build
+        env:
+          INSVEX_HOST: 'localhost'
+          INSVEX_PORT: '3000'
+          INSVEX_HOST_DIR_MAP: '{ "*": "." }'
+          INSVEX_ALLOWED_DIRS: '*'
+          INSVEX_THUMB_DIR: thumbs
+          INSVEX_THUMB_SIZE: 256
+          INSVEX_BUILDCONFIG_SPA: false
+          INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
+          INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''
+          INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+
+  build-SPA:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.26.3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 19
+      - run: pnpm run setup
+      - run: pnpm run build
+        env:
+          INSVEX_HOST: ''
+          INSVEX_PORT: ''
+          INSVEX_HOST_DIR_MAP: '{ "*": "." }'
+          INSVEX_ALLOWED_DIRS: '*'
+          INSVEX_THUMB_DIR: thumbs
+          INSVEX_THUMB_SIZE: 256
+          INSVEX_BUILDCONFIG_SPA: 'true'
+          INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
+          INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''
+          INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+
+  build-SPA-NginX-AUTOINDEX:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.26.3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 19
+      - run: pnpm run setup
+      - run: pnpm run build
+        env:
+          INSVEX_HOST: ''
+          INSVEX_PORT: ''
+          INSVEX_HOST_DIR_MAP: '{ "*": "." }'
+          INSVEX_ALLOWED_DIRS: '*'
+          INSVEX_THUMB_DIR: thumbs
+          INSVEX_THUMB_SIZE: 256
+          INSVEX_BUILDCONFIG_SPA: 'true'
+          INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
+          INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: 'index.json'
+          INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
