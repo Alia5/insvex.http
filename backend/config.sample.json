@@ -1,0 +1,12 @@
+{
+    "port": 7069,
+    "host": "localhost",
+    "allowedDirs": [
+        "/path/to/indexedDir"
+    ],
+    "hostDirMap": {
+        "*":  "/path/to/indexedDir"
+    },
+    "thumbDir": "thumbs",
+    "thumbSize": 256
+}

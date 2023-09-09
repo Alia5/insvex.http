@@ -19,39 +19,50 @@ export default [
         preferBuiltins: true,
         browser: false,
       }),
-      !dev && copy({
-        targets: [
-          {
-            src: "../frontend/build/*",
-            dest: "dist/frontend",
-          },
-          {
-            src: "built.package.json",
-            dest: "./dist",
-            rename: "package.json",
-          },
-        ],
-      }),
-      !dev && replace({
-        "insvex.http-frontend/handler": "./frontend/handler.js",
-        preventAssignment: true,
-      }),
+      !dev &&
+        copy({
+          targets: [
+            ...(process.env.INSVEX_BUILDCONFIG_SPA === "true"
+              ? []
+              : [
+                  {
+                    src: "../frontend/build/*",
+                    dest: "dist/frontend",
+                  },
+                ]),
+            {
+              src: "built.package.json",
+              dest: "./dist",
+              rename: "package.json",
+            },
+            {
+              src: "config.sample.json",
+              dest: "./dist",
+              rename: "config.json",
+            },
+          ],
+        }),
+      !dev &&
+        replace({
+          "insvex.http-frontend/handler": "./frontend/handler.js",
+          preventAssignment: true,
+        }),
       dev &&
         run({
           execArgv: ["-r", "source-map-support/register"],
         }),
     ],
     external: [
-        "insvex.http-frontend/handler",
-        "./frontend/handler.js",
-        "better-sqlite3",
-        ...(dev ? ["fliessheck"] : [])
+      "insvex.http-frontend/handler",
+      "./frontend/handler.js",
+      "better-sqlite3",
+      ...(dev ? ["fliessheck"] : []),
     ],
     output: [
       {
         dir: `dist`,
         format: "es",
-        sourcemap: 'inline',
+        sourcemap: "inline",
       },
     ],
   },

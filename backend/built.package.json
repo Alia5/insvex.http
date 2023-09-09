@@ -1,4 +1,7 @@
 {
     "type": "module",
-    "main": "index.js"
+    "main": "index.js",
+    "dependencies": {
+        "better-sqlite3": "^8.6.0"
+    }
 }
