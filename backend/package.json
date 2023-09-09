@@ -13,6 +13,7 @@
     "scripts": {
         "lint": "eslint src/",
         "lint:fix": "eslint src/ --fix",
+        "lint:ci": "eslint src/ --no-fix --format=compact",
         "build": "rollup -c",
         "dev": "rollup -c --watch"
     },
