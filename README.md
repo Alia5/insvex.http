@@ -41,9 +41,54 @@ Configure nginx, drop in SPA files and you're *done*!
 
 ## Installation
 
-```
-TODO
-```
+Before installation, you should decide if you want to run insvex.http with SSR or as SPA.
+
+### SPA mode with nginx autoindex
+
+**Pros:**
+  - no dependencies
+  - easy setup
+
+**Cons:**
+  - no thumbnail generation
+  - requires clientside javascript
+  - no pagination
+
+1. configure nginx according to the [provided sample config](/sample-SPA_NGINX_AUTOINDEX.nginx.site.conf)
+2. Drop the files of the `SPA-NginX-AUTOINDEX`-artifact into your webroot
+
+### SSR
+
+**Pros:**
+  - thumbnail generation
+  - no clientside javascript required
+  - pagination (or endless scrolling)
+  - fastest
+
+**Cons:**
+  - dependencies
+
+1. configure nginx according to the [provided sample config](/sample-SSR.nginx.site.conf)
+2. copy the files of the `SSR`-artifact into any directory, but **not** into your webroot
+3. Install dependencies
+    ```bash
+    # ubuntu
+    sudo apt install nodejs ffmpeg graphicsmagick libreoffice
+    # arch
+    sudo pacman -S nodejs ffmpeg graphicsmagick libreoffice
+    ```
+4. cd into the directory where you copied the `SSR`-files
+5. edit `config.json` to your liking
+6. Install node dependencies
+    ```bash
+    npm i
+    ```
+7. run the server
+    ```bash
+    npm run start
+    ```
+8. (optional) Configure a systemd service
+
 
 ## Development
 
