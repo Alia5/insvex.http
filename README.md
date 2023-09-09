@@ -19,7 +19,12 @@ When using nginx and insvex.http configured as SPA, there isn't even a need to r
 In fact, with the right nginx-config (sample provided) insvex.http can **work without any dependencies**!  
 Configure nginx, drop in SPA files and you're *done*!
 
+## Demo:
+
+https://insvex-demo.1-3-3-7.dev
+
 ![screenshot](screenie.png?raw=true)
+
 ## Features
 
 - [x] modern, simple and ⚡-fast
