@@ -32,7 +32,7 @@ export const handleConfig = (): InsvexConfig => {
     ) as InsvexConfig;
 
     config = {
-        port: parseInt(process.env.INSVEX_PORT || `${fileConfig.port}` || '3000'),
+        port: parseInt(process.env.INSVEX_PORT || `${fileConfig.port}` || '7069'),
         host: process.env.INSVEX_HOST || fileConfig.host || 'localhost',
         allowedDirs: safeParseJSON(process.env.INSVEX_ALLOWED_DIRS) as string[] || fileConfig.allowedDirs || ['*'],
         hostDirMap: safeParseJSON(process.env.INSVEX_HOST_DIR_MAP) as Record<string, string> || fileConfig.hostDirMap || {
@@ -47,6 +47,8 @@ export const handleConfig = (): InsvexConfig => {
 
     process.env.INSVEX_PORT = config.port.toString();
     process.env.INSVEX_HOST = config.host;
+    process.env.INSVEX_PUBLIC_PORT = config.port.toString();
+    process.env.INSVEX_PUBLIC_HOST = config.host;
     process.env.INSVEX_ALLOWED_DIRS = JSON.stringify(config.allowedDirs);
     process.env.INSVEX_HOST_DIR_MAP = JSON.stringify(config.hostDirMap);
     process.env.INSVEX_THUMB_DIR = config.thumbDir;
