@@ -9,6 +9,7 @@ import LoadingSpinner from '../LoadingSpinner.svelte';
 import { onMount } from 'svelte';
 import ItemCard from './ItemCard.svelte';
 import { mimeAdditions } from './mime-patches';
+import type { DirList } from '$lib/api/fetchDirListOrFile';
 
 export let data: PageData;
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
@@ -25,7 +26,7 @@ if (import.meta.env.INSVEX_BUILDCONFIG_SPA) {
 
 $: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.currentPath}`;
 
-let files = data.dirList.files || [];
+let files: DirList = data.dirList.files || [];
 let path: string | undefined = data.currentPath;
 let page = data.dirList.page;
 $: {
