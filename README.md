@@ -22,7 +22,8 @@ When using nginx and insvex.http configured as SPA, there isn't even a need to r
 - [x] SSR (server side rendering)
 - [x] works with javascript disabled in SSR mode
 - [x] SPA mode
-- [x] optionally doesn't require node.js
+- [x] optionally **without any dependencies**  
+  configure nginx, drop files, done!
 - [x] thumbnail generation
 - [x] extensive file preview
   - [x] synatax highlightin when previewing code
