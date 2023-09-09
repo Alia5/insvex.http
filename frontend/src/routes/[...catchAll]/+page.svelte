@@ -56,6 +56,7 @@ let loadingMore = false;
 const handleInfScroll = (e: Event) => {
     const tgt = e.target as HTMLElement;
     if (tgt?.scrollTop >= tgt?.scrollHeight - tgt?.offsetHeight - 2 * 256) {
+        if (data.dirList.page >= data.dirList.totalPages) return;
         if (loadingMore) return;
         loadingMore = true;
         void goto(`?page=${data.dirList.page + 1}`, {
