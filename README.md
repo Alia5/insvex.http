@@ -49,7 +49,7 @@ corepack enable && corepack prepare pnpm@latest
 git clone git@github.com:Alia5/insvex.http.git
 git submodule update --init --recursive
 cd insvex.http
-pnpm install
+pnpm run setup
 pnpm run dev
 ```
 
