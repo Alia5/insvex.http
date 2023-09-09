@@ -92,6 +92,21 @@ Before installation, you should decide if you want to run insvex.http with SSR o
     npm run start
     ```
 8. (optional) Configure a systemd service
+   ```
+    [Unit]
+    Description=insvex.http systemd service
+    Documentation=https://github.com/Alia5/insvex.http
+    
+    [Service]
+    Type=simple
+    WorkingDirectory=/path/to/ssr/server/files
+    Environment="NODE_ENV=production"
+    ExecStart=node index.js
+    Restart=always
+    
+    [Install]
+    WantedBy=multi-user.target                           
+   ```
 
 
 ## Development
