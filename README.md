@@ -37,7 +37,7 @@ https://insvex-demo.1-3-3-7.dev
   configure nginx, drop files, done!
 - [x] thumbnail generation
 - [x] extensive file preview
-  - [x] synatax highlightin when previewing code
+  - [x] syntax highlighting when previewing code
 - [ ] directory tree
 - [ ] QR-code generation
 - [ ] search
@@ -46,7 +46,7 @@ https://insvex-demo.1-3-3-7.dev
 
 ## Installation
 
-Before installation, you should decide if you want to run insvex.http with SSR or as SPA.
+Before installation, you should decide whether to run insvex.http with SSR or as SPA.
 
 ### SPA mode with nginx autoindex
 
