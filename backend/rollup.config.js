@@ -12,7 +12,10 @@ export default [
   {
     input: `src/index.ts`,
     plugins: [
-      typescript(),
+      typescript({
+        sourceMap: true,
+        inlineSources: false,
+      }),
       commonjs(),
       json(),
       resolve({
@@ -62,7 +65,7 @@ export default [
       {
         dir: `dist`,
         format: "es",
-        sourcemap: process.env.NODE_ENV !== 'production' ? "inline" : false,
+        sourcemap: process.env.NODE_ENV !== 'production' ? true : false,
       },
     ],
   },

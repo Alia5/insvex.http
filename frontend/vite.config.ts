@@ -39,7 +39,10 @@ export default defineConfig(({ mode }) => {
                 include: ['path']
             })
         ],
-        envPrefix: 'INSVEX_'
+        envPrefix: 'INSVEX_',
+        build: {
+            sourcemap: true
+        }
     };
 });
 

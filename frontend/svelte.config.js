@@ -17,7 +17,7 @@ const config = {
             ? adapterStatic({
                 fallback: 'index.html',
             })
-            : adapterNode(),
+            : adapterNode(), // keep adapter-node; is bun compatible
         env: {
             privatePrefix: 'INSVEX_',
             publicPrefix: 'INSVEX_PUBLIC_'

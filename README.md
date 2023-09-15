@@ -19,7 +19,9 @@ When using nginx and insvex.http configured as SPA, there isn't even a need to r
 In fact, with the right nginx-config (sample provided) insvex.http can **work without any dependencies**!  
 Configure nginx, drop in SPA files and you're *done*!
 
-## Demo:
+insvex.http works with [bun](https://bun.sh) or node.js
+
+## Demo
 
 https://insvex-demo.1-3-3-7.dev
 
@@ -90,13 +92,13 @@ Before installation, you should decide whether to run insvex.http with SSR or as
     ```
 4. cd into the directory where you copied the `SSR`-files
 5. edit `config.json` to your liking
-6. Install node dependencies
+6. _(**IF** using node instead of bun)_ Install node dependencies
     ```bash
     npm i
     ```
 7. run the server
     ```bash
-    npm run start
+    bun run start # `npm run start` for node
     ```
 8. (optional) Configure a systemd service
    ```
@@ -108,7 +110,7 @@ Before installation, you should decide whether to run insvex.http with SSR or as
     Type=simple
     WorkingDirectory=/path/to/ssr/server/files
     Environment="NODE_ENV=production"
-    ExecStart=node index.js
+    ExecStart=bun run index.js # `node index.js` for node
     Restart=always
     
     [Install]
@@ -118,17 +120,14 @@ Before installation, you should decide whether to run insvex.http with SSR or as
 
 ## Development
 
+[Bun](https://bun.sh) is used for development.
+
 ```bash
-# pnpm as package manager is encouraged, to install:
-corepack enable && corepack prepare pnpm@latest
-# corepack comes bundled with node.js, so no need to install it
-
-
 git clone git@github.com:Alia5/insvex.http.git
 git submodule update --init --recursive
 cd insvex.http
-pnpm run setup
-pnpm run dev
+bun run setup
+bun run dev
 ```
 
 ## License
