@@ -3,31 +3,22 @@
   "version": "1.0.0",
   "scripts": {
     "setup": "bun i --no-frozen-lockfile && bun run --cwd ./Fliessheck build && bun run --cwd ./frontend build && bun i --no-frozen-lockfile && bun run --cwd ./backend build",
-    
     "lint:fe": "bun run --cwd ./frontend lint",
     "lint:be": "bun run --cwd ./backend lint",
     "lint:fliessheck": "bun run --cwd ./Fliessheck lint",
-    
     "lint": "bun run lint:fliessheck && bun run lint:fe && bun run lint:be",
-
     "lint:fe:ci": "bun run --cwd ./frontend lint:ci",
     "lint:be:ci": "bun run --cwd ./backend lint:ci",
     "lint:fliessheck:ci": "bun run --cwd ./Fliessheck lint:ci",
-    
     "lint:ci": "bun run lint:fliessheck:ci && bun run lint:fe:ci && bun run lint:be:ci",
-
     "dev:fe": "bun run --cwd ./frontend dev",
     "dev:be": "bun run --cwd ./backend dev",
     "dev:fliessheck": "bun run --cwd ./Fliessheck dev",
-
     "dev": "concurrently \"bun run dev:fliessheck\" \"bun run dev:fe\" \"bun run dev:be\"",
-
     "build:fe": "bun run --cwd ./frontend build",
     "build:be": "bun run --cwd ./backend build",
     "build:fliessheck": "bun run --cwd ./Fliessheck build",
-
     "build": "concurrently \"bun run build:fliessheck\" \"bun run build:fe\" \"bun run build:be\"",
-
     "build:spa": "bun run build:fe"
   },
   "keywords": [],
@@ -35,5 +26,7 @@
   "devDependencies": {
     "concurrently": "^8.2.1"
   },
-  "workspaces": ["./*"]
+  "workspaces": [
+    "./*"
+  ]
 }

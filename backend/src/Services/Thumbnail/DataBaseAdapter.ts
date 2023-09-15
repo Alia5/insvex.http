@@ -1,5 +1,6 @@
 import { DatabaseAdapter } from 'fliessheck';
-import type { Database } from 'better-sqlite3';
+import type { Database as BetterSqLite3Database } from 'better-sqlite3';
+import type { Database } from 'bun:sqlite';
 
 
 interface Row {
@@ -7,7 +8,7 @@ interface Row {
     thumbPath: string;
 }
 
-export class ThumbDbAdapter extends DatabaseAdapter<Database> {
+export class ThumbDbAdapter extends DatabaseAdapter<Database|BetterSqLite3Database> {
 
     public constructor(protected db: Database) {
         super(db);

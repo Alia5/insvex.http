@@ -17,7 +17,8 @@
             "esnext"
         ],
         "types": [
-            "node"
+            "node",
+            "bun-types"
         ],
         "allowJs": false,
         "useUnknownInCatchVariables": true,
