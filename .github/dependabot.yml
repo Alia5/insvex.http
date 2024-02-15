@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: production
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: production
+    groups:
+      svelte:
+        patterns:
+        - "@sveltejs*"
+        - "svelte*"
+        update-types:
+        - "minor"
+        - "patch"
+    ignore:
+      - dependency-name: "@sveltejs*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "svelte*"
+        update-types: ["version-update:semver-major"]
