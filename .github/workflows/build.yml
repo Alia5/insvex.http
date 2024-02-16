@@ -9,10 +9,10 @@ jobs:
           submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.26.3
+          version: 8.15.3
       - uses: actions/setup-node@v2
         with:
-          node-version: 19   
+          node-version: 21   
       - run: pnpm run setup
       - run: pnpm run lint:ci
 
@@ -24,10 +24,10 @@ jobs:
           submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.26.3
+          version: 8.15.3
       - uses: actions/setup-node@v2
         with:
-          node-version: 19
+          node-version: 21
       - run: git submodule update --init --recursive    
       - run: pnpm run setup
       - run: pnpm run build
@@ -58,10 +58,10 @@ jobs:
           submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.26.3
+          version: 8.15.3
       - uses: actions/setup-node@v2
         with:
-          node-version: 19
+          node-version: 21
       - run: git submodule update --init --recursive    
       - run: pnpm run setup
       - run: pnpm run build
@@ -99,10 +99,10 @@ jobs:
           submodules: recursive
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.26.3
+          version: 8.15.3
       - uses: actions/setup-node@v2
         with:
-          node-version: 19
+          node-version: 21
       - run: git submodule update --init --recursive    
       - run: pnpm run setup
       - run: pnpm run build:spa
