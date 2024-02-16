@@ -3,36 +3,27 @@
   "version": "1.0.0",
   "scripts": {
     "setup": "pnpm i --no-frozen-lockfile && pnpm run --filter ./Fliessheck build && pnpm run --filter ./frontend build && pnpm i --no-frozen-lockfile && pnpm run --filter ./backend build",
-    
     "lint:fe": "pnpm run --filter ./frontend lint",
     "lint:be": "pnpm run --filter ./backend lint",
     "lint:fliessheck": "pnpm run --filter ./Fliessheck lint",
-    
     "lint": "pnpm run lint:fliessheck && pnpm run lint:fe && pnpm run lint:be",
-
     "lint:fe:ci": "pnpm run --filter ./frontend lint:ci",
     "lint:be:ci": "pnpm run --filter ./backend lint:ci",
     "lint:fliessheck:ci": "pnpm run --filter ./Fliessheck lint:ci",
-    
     "lint:ci": "pnpm run lint:fliessheck:ci && pnpm run lint:fe:ci && pnpm run lint:be:ci",
-
     "dev:fe": "pnpm run --filter ./frontend dev",
     "dev:be": "pnpm run --filter ./backend dev",
     "dev:fliessheck": "pnpm run --filter ./Fliessheck dev",
-
     "dev": "concurrently \"pnpm run dev:fliessheck\" \"pnpm run dev:fe\" \"pnpm run dev:be\"",
-
     "build:fe": "pnpm run --filter ./frontend build",
     "build:be": "pnpm run --filter ./backend build",
     "build:fliessheck": "pnpm run --filter ./Fliessheck build",
-
     "build": "concurrently \"pnpm run build:fliessheck\" \"pnpm run build:fe\" \"pnpm run build:be\"",
-
     "build:spa": "pnpm run build:fe"
   },
   "keywords": [],
   "author": "Peter Repukat - FlatspotSoftware",
   "devDependencies": {
-    "concurrently": "^8.2.1"
+    "concurrently": "^8.2.2"
   }
 }

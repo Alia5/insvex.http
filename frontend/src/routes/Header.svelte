@@ -61,6 +61,8 @@ onMount(() => {
     <div no-js-shown class="no-js-hint">
         <span>Works best with Javascript enabled</span>
     </div>
+    <a class="powered-by" href="https://github.com/Alia5/insvex.http" target="_blank"
+        >Powered by<br />Insvex.http</a>
 </header>
 
 <style lang="postcss">
@@ -70,8 +72,22 @@ header {
     box-shadow: 0 0.1em 0.3em 0em var(--shadowColor);
     display: grid;
     padding-right: 1em;
-    grid-template-columns: min-content auto min-content;
+    grid-template-columns: min-content auto min-content min-content;
     gap: 1em;
+}
+
+.powered-by {
+    white-space: nowrap;
+    align-self: center;
+    text-align: center;
+    color: var(--textColor);
+    text-decoration: none;
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+    &:hover {
+        text-decoration: none;
+        background-color: color-mix(in srgb, var(--textColor), transparent 80%);
+    }
 }
 
 .breadcrumbs {
