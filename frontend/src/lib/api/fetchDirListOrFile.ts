@@ -27,9 +27,13 @@ export const fetchDirListOrFile = async (forHost: string, path: string, thumbNam
         }
         fetchUrl = `${
             !host || host?.startsWith('http') ? '' : 'http://'
-        }${host || ''}${port ? ':' : ''}${port || ''}${path === '/' ? '' : path}/${import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME}`;
+        }${host || ''}${port ? ':' : ''}${port || ''}${path === '/' ? '' : path}/${
+            import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME
+        }`;
     } else {
-        fetchUrl = `${!host || host?.startsWith('http') ? '' : 'http://'}${host || ''}${port ? ':' : ''}${port || ''}/api/files/${forHost}${path}${
+        fetchUrl = `${
+            !host || host?.startsWith('http') ? '' : 'http://'
+        }${host || ''}${port ? ':' : ''}${port || ''}/api/files/${forHost}${path}${
             thumbName ? `?thumb=${thumbName}` : ''
         }${
             page ? `?page=${page}` : ''

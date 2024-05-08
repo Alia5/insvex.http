@@ -6,6 +6,7 @@ export const scaleFromId = (
     params: { id?: string; delay?: number; duration?: number | ((dn: number) => number); easing?: (t: number) => number } = {}
 ) => {
 
+    // eslint-disable-next-line no-constant-binary-expression
     const fromEl = document.querySelector(`#${CSS.escape(params.id || '')}` || '#main');
 
     const rootEl = document.querySelector('.app');

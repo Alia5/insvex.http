@@ -6,6 +6,7 @@ import * as http from 'http';
 import folderListService from './Services/FilesList';
 import thumbService from './Services/Thumbnail';
 import { getConfig } from './config';
+
 import Database from 'better-sqlite3';
 dotenv.config();
 
@@ -36,7 +37,7 @@ const main = async () => {
     db.pragma('journal_mode = WAL');
 
 
-    initServices([folderListService, thumbService], expressApp, undefined, db);
+    initServices([folderListService, thumbService], expressApp as never, undefined, db);
 
     if (frontend) {
         expressApp.use(frontend.handler);

@@ -36,7 +36,7 @@ export const handleConfig = (): InsvexConfig => {
         host: process.env.INSVEX_HOST || fileConfig.host || 'localhost',
         allowedDirs: safeParseJSON(process.env.INSVEX_ALLOWED_DIRS) as string[] || fileConfig.allowedDirs || ['*'],
         hostDirMap: safeParseJSON(process.env.INSVEX_HOST_DIR_MAP) as Record<string, string> || fileConfig.hostDirMap || {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+
             '*': '.'
         },
         thumbDir: process.env.INSVEX_THUMB_DIR || fileConfig.thumbDir || 'thumbs',

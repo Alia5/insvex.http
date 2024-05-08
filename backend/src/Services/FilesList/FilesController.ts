@@ -41,7 +41,7 @@ export class FilesController extends Controller {
         return absolutePath;
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
+
     public  listDirForHost(host: string, path?: string, page = 1): PagedDirList {
         const absolutePath = this.getAbsolutePathForHost(host);
         const files = readdirSync(resolve(absolutePath, path || ''), { withFileTypes: true, recursive: false })

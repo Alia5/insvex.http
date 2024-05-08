@@ -14,7 +14,7 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
     }
 
     private async getForHost(host: string, params: RequestParams) {
-        // eslint-disable-next-line
+
         const page = params.query.page ? Number.parseInt(`${params.query.page}`, 10) : 1;
         if (Number.isNaN(page)) {
             throw new BadRequestError('page must be a number');
@@ -89,7 +89,7 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
+
     private async listDirForHost(host: string, page = 1) {
         this.logger.debug('Listing dir for host', host, '; page:', page);
         try {

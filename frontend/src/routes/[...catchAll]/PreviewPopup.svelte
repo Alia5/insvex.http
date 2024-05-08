@@ -1,8 +1,7 @@
 <script context="module" lang="ts">
-/* eslint-disable max-lines */
 import { isText as isTextCheck, mimeAdditions } from './mime-patches';
 export const SUPPORTED_MIMES = ['image', 'video', 'text', 'pdf'];
-// eslint-disable-next-line no-shadow, prettier/prettier
+// eslint-disable-next-line no-shadow
 export const supportsMimeType = (mime: string) => {
     if (isTextCheck(mime)) {
         return true;
@@ -42,12 +41,13 @@ $: mime = mimeAdditions(file) || lookup(file.split('.')?.pop() || '');
 // svelte doesn't have switch blocks, so I instead opt for a bunch of separate blocks.....
 $: isImage = mime && mime?.includes('image');
 $: isVideo = mime && mime?.includes('video');
-// eslint-disable-next-line prettier/prettier
+
 $: isText = mime && isTextCheck(mime);
 $: idPdf = mime && mime?.includes('pdf');
 
 let isPortrait = browser ? (window?.screen?.height > window?.screen?.width ? true : false) : false;
 
+// eslint-disable-next-line no-console
 $: console.log(isPortrait);
 
 const getHighlightedText = async (url: string) => {
@@ -125,7 +125,7 @@ const calculateSizePrcnt = () => {
 };
 
 const previewElementObserver = browser ? new ResizeObserver(calculateSizePrcnt) : undefined;
-/* eslint-disable prettier/prettier */
+
 afterUpdate(() => {
     if (previewElement?.tagName === 'IMG') {
         previewElement.onload = () => {
@@ -147,7 +147,6 @@ afterUpdate(() => {
         previewElementObserver?.observe(previewElement);
     }
 });
-/* eslint-enable prettier/prettier */
 </script>
 
 <div class="popup-container {isFullscreen ? 'fullscreen' : ''}">

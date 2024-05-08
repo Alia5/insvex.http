@@ -9,8 +9,8 @@ import Unfonts from 'unplugin-fonts/vite';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
-    env.INSVEX_PUBLIC_HOST = env.INSVEX_HOST;
-    env.INSVEX_PUBLIC_PORT = env.INSVEX_PORT;
+    env.INSVEX_PUBLIC_HOST = env.INSVEX_HOST || '';
+    env.INSVEX_PUBLIC_PORT = env.INSVEX_PORT || '';
     // load .env file to process.env to have access in svelte.config.js
     process.env = { ...process.env, ...env };
 
