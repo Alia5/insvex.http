@@ -47,7 +47,7 @@ export default tseslint.config(
                 sourceType: 'module',
                 ecmaVersion: 2020,
                 project: './tsconfig.json',
-                extraFileExtensions: ['.svelte'],
+                extraFileExtensions: ['.svelte', '.svelte.ts'],
             },
         },
         rules: {
@@ -181,7 +181,7 @@ export default tseslint.config(
         },
     },
     {
-        files: ['*.svelte', '**/*.svelte'],
+        files: ['*.svelte', '**/*.svelte', "**/*.svelte.ts"],
         languageOptions: {
             parser: svelteEslintParser,
             parserOptions: {

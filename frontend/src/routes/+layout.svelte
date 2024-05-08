@@ -1,12 +1,13 @@
 <script lang="ts">
 import { onNavigate } from '$app/navigation';
+import type { Snippet } from 'svelte';
 import type { LayoutData } from './$types';
 import Header from './Header.svelte';
 import './styles.pcss';
 import 'unfonts.css';
 import { links } from 'unplugin-fonts/head';
 
-export let data: LayoutData;
+const { data, children }: { data: LayoutData; children: Snippet } = $props();
 
 onNavigate((navigation) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,12 +21,15 @@ onNavigate((navigation) => {
         });
     });
 });
+
+$inspect(links);
 </script>
 
 <svelte:head>
-    {#each links as link (link)}
+    <!-- TODO: Fix after  https://github.com/sveltejs/kit/issues/10089 is fixed -->
+    <!-- {#each links as link (link)}
         <link {...link?.attrs || {}} />
-    {/each}
+    {/each} -->
     <title>index of {data.host}</title>
 </svelte:head>
 <div class="app">
@@ -44,7 +48,7 @@ onNavigate((navigation) => {
     </noscript>
     <Header host="{data.host}" path="{data.path}" />
     <main>
-        <slot />
+        {@render children()}
     </main>
 </div>
 

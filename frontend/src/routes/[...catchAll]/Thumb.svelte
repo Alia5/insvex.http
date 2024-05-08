@@ -1,50 +1,44 @@
 <script lang="ts">
 import { browser } from '$app/environment';
 import { getIcon } from 'material-file-icons';
-import { onMount } from 'svelte';
 import { mimeAdditions } from './mime-patches';
 import { lookup } from 'mime-types';
 
 import BackArrow from '~icons/material-symbols/subdirectory-arrow-left';
+import { onMount } from 'svelte';
 
-export let file: string;
-export let prefixPath: string;
-export let isDir = false;
+const { file, prefixPath, isDir = false }: { file: string; prefixPath: string; isDir?: boolean } = $props();
 
 const icon = getIcon(file);
 
-let thisImgEl: HTMLImageElement | undefined;
-let thumbLoaded = !browser;
+let thisImgEl: HTMLImageElement | undefined = $state();
+let thumbLoaded = $state(!browser);
 onMount(() => {
     if (thisImgEl?.complete && thisImgEl?.naturalHeight > 1) {
         thumbLoaded = true;
     }
 });
 
-let fileIconColor = '#000000af';
-
 let maybeIconColor = icon.svg.match(/fill="([^"]+)"/)?.[1];
 if (maybeIconColor === 'none') {
     maybeIconColor = icon.svg.match(/stroke="([^"]+)"/)?.[1];
 }
-if (maybeIconColor && maybeIconColor !== 'none') {
-    fileIconColor = maybeIconColor;
-}
+const fileIconColor = $state(maybeIconColor && maybeIconColor !== 'none' ? maybeIconColor : '#000000af');
 
 const fullImageThumbs = import.meta.env.INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS === 'true';
-let shouldShowThumbImg = true;
 /* eslint-disable prettier/prettier */
-if (
-    import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true'
-    && import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME
-) {
+
+const shouldShowThumbImg = $state(
+    import.meta.env.INSVEX_BUILDCONFIG_SPA === 'true' &&
+        import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME
     // NginX directory index mode
-    shouldShowThumbImg = false;
-}
+        ?  false
+        : true
+);
 /* eslint-enable prettier/prettier */
 
-$: mime = mimeAdditions(file) || lookup(file.split('.')?.pop() || '');
-$: isImage = mime && mime?.includes('image');
+const mime = $derived(mimeAdditions(file) || lookup(file.split('.')?.pop() || ''));
+const isImage = $derived(mime && mime?.includes('image'));
 </script>
 
 <div class="thumb-container">
@@ -57,7 +51,7 @@ $: isImage = mime && mime?.includes('image');
                 alt=""
                 class="thumb-img"
                 style="{`opacity: ${thumbLoaded ? 1 : 0};`}"
-                on:load="{() => {
+                onload="{() => {
                     thumbLoaded = true;
                 }}"
                 bind:this="{thisImgEl}" />

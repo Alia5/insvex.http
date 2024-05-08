@@ -1,6 +1,11 @@
 <script lang="ts">
-export let strokeWidth: number | string = 4;
-export let color = 'var(--textColor)';
+const {
+    strokeWidth = 4,
+    color = 'var(--textColor)'
+}: {
+    strokeWidth?: number | string;
+    color?: string;
+} = $props();
 </script>
 
 <svg class="circular">

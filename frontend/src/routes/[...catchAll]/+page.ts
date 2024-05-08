@@ -71,7 +71,7 @@ export const load: PageLoad = async (event: LoadEvent) => {
     }
 
     return {
-        dirList: dirList ||  {
+        dirList: await dirList ||  {
             page: 1,
             totalPages: 1,
             totalFiles: 0,

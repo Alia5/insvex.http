@@ -2,15 +2,24 @@
 import { page } from '$app/stores';
 import type { DirList } from '$lib/api/fetchDirListOrFile';
 import Thumb from './Thumb.svelte';
-import { createEventDispatcher } from 'svelte';
-const dispatch = createEventDispatcher();
 
-export let link = false;
-export let file: DirList[number];
-export let isScrolling = false;
-export let thumbPrefixPath: string;
+page;
 
-export let currentPath: string;
+const {
+    link = false,
+    file,
+    isScrolling = false,
+    thumbPrefixPath,
+    currentPath,
+    onclick
+}: {
+    link?: boolean;
+    file: DirList[number];
+    isScrolling?: boolean;
+    thumbPrefixPath: string;
+    currentPath: string;
+    onclick?: () => void;
+} = $props();
 </script>
 
 {#if link}
@@ -30,8 +39,8 @@ export let currentPath: string;
         no-js-hidden
         class="item-card"
         style="{isScrolling ? 'pointer-events: none' : ''}"
-        on:click="{() => {
-            dispatch('click', { file });
+        onclick="{() => {
+            onclick?.();
         }}">
         <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" />
         <span>{file.path}</span>

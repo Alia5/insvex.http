@@ -3,14 +3,14 @@ import { browser } from '$app/environment';
 import { onMount } from 'svelte';
 import IconMenu from '~icons/material-symbols/menu';
 
-export let host: string;
-export let path: string;
+const { host, path }: { host: string; path: string } = $props();
 
 const defaultDarkMode = !browser
     ? false
     : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-let darkMode = defaultDarkMode;
+let darkMode = $state(defaultDarkMode);
+
 const toggleTheme = () => {
     const body = document.querySelector('body');
     const hasTheme = body?.classList.contains('theme-dark') || body?.classList.contains('theme-light');
@@ -57,7 +57,7 @@ onMount(() => {
         type="checkbox"
         class="toggle"
         checked="{!darkMode}"
-        on:change="{() => toggleTheme()}" />
+        onchange="{() => toggleTheme()}" />
     <div no-js-shown class="no-js-hint">
         <span>Works best with Javascript enabled</span>
     </div>

@@ -7,7 +7,7 @@ export const load: ServerLoad|undefined = import.meta.env.INSVEX_BUILDCONFIG_SPA
         const locals = event.locals as { dirList: Promise<PagedDirList>}|undefined;
 
         return {
-            dirList: locals?.dirList || undefined,
+            dirList: await locals?.dirList || undefined,
             currentPath: event.url.pathname
         };
     };

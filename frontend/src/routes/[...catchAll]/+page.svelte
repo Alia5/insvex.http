@@ -11,47 +11,56 @@ import ItemCard from './ItemCard.svelte';
 import { mimeAdditions } from './mime-patches';
 import type { DirList } from '$lib/api/fetchDirListOrFile';
 
-export let data: PageData;
+const { data }: { data: PageData } = $props();
+
 const apiHost = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST;
 const apiPort = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT;
 
 // in SPA mode thumbs need to be fetched from api
 // in SSR more, internal url-handling handles api-fetching
-let thumbHost = '';
-if (import.meta.env.INSVEX_BUILDCONFIG_SPA) {
-    thumbHost = `${!apiHost || apiHost?.startsWith('http') ? '' : 'http://'}${apiHost}${
-        apiPort ? ':' : ''
-    }${apiPort}`;
-}
+/* eslint-disable prettier/prettier */
+const thumbHost = $state(
+    import.meta.env.INSVEX_BUILDCONFIG_SPA
+        ? (
+            `${!apiHost || apiHost?.startsWith('http') ? '' : 'http://'}${apiHost}${
+                apiPort ? ':' : ''
+            }${apiPort}`
+        )
+        : ''
+);
+/* eslint-enable prettier/prettier */
 
-$: thumbPrefixPath = `${thumbHost}${data.currentPath === '/' ? '' : data.currentPath}`;
+const thumbPrefixPath = $derived(`${thumbHost}${data.currentPath === '/' ? '' : data.currentPath}`);
 
-let files: DirList = data.dirList.files || [];
-let path: string | undefined = data.currentPath;
-let page = data.dirList.page;
-$: {
+let files: DirList = $state(data.dirList.files || []);
+let path: string | undefined = $state(data.currentPath);
+let page = $state(data.dirList.page);
+$effect(() => {
     if (path === data.currentPath) {
         if (page > data.dirList.page) {
             files = data.dirList.files;
             files = files;
         }
-        files.push(...data.dirList.files.filter((file) => !files.includes(file)));
+        files.push(...(data.dirList.files || []).filter((file) => !files.includes(file)));
         files = files;
     } else {
         files = data.dirList.files;
         path = data.currentPath;
     }
     page = data.dirList.page;
-}
-if (browser) {
-    if (files.length <= 100 && data.dirList.page > 1) {
-        void goto('?page=1', {
-            replaceState: true,
-            invalidateAll: true
-        });
+});
+
+onMount(() => {
+    if (browser) {
+        if (files.length <= 100 && data.dirList.page > 1) {
+            void goto('?page=1', {
+                replaceState: true,
+                invalidateAll: true
+            });
+        }
     }
-}
-let loadingMore = false;
+});
+let loadingMore = $state(false);
 
 const handleInfScroll = (e: Event) => {
     const tgt = e.target as HTMLElement;
@@ -73,9 +82,9 @@ const getMime = (file: string) => {
     return addition || lookup(file.split('.')?.pop() || '');
 };
 
-let currentFile: string | undefined;
+let currentFile: string | undefined = $state();
 
-let isScrolling = false;
+let isScrolling = $state(false);
 onMount(() => {
     window.onscroll = () => (isScrolling = true);
 
@@ -91,7 +100,7 @@ onMount(() => {
     <meta name="description" content="Insvex.http" />
 </svelte:head>
 
-<section on:scroll="{handleInfScroll}">
+<section onscroll="{handleInfScroll}">
     <div class="file-grid">
         {#if data.path !== '/'}
             {#key '..'}
@@ -120,7 +129,7 @@ onMount(() => {
                     isScrolling="{isScrolling}"
                     thumbPrefixPath="{thumbPrefixPath}"
                     currentPath="{data.currentPath}"
-                    on:click="{() => {
+                    onclick="{() => {
                         currentFile = file.path;
                     }}" />
             {/if}
@@ -131,7 +140,7 @@ onMount(() => {
             <!-- <a href="?page={data.dirList.page + 1}">Load more</a> -->
             {#if !loadingMore}
                 <button
-                    on:click="{() => {
+                    onclick="{() => {
                         loadingMore = true;
                         void goto(`?page=${data.dirList.page + 1}`, {
                             replaceState: true,
@@ -164,7 +173,7 @@ onMount(() => {
     <!-- eslint-disable prettier/prettier -->
     <PreviewPopup
         bind:file="{currentFile}"
-        previewableItems="{files
+        previewableItems="{(files || [])
             .filter((f) => !f.isDir && previewSupportsType(getMime(f.path) || ''))
             .map((f) => f.path)
         }" />

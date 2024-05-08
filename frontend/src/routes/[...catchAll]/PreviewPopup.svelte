@@ -14,7 +14,7 @@ export const supportsMimeType = (mime: string) => {
 import { browser } from '$app/environment';
 import { lookup } from 'mime-types';
 import { fade } from 'svelte/transition';
-import { scaleFromId } from './transition';
+import { scaleFromId } from './transition.svelte';
 import { page } from '$app/stores';
 import LoadingSpinner from '../LoadingSpinner.svelte';
 
@@ -27,28 +27,30 @@ import ChevronRight from '~icons/material-symbols/chevron-right';
 
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
-import { afterUpdate, onMount } from 'svelte';
+import { onMount } from 'svelte';
 
-export let file = '';
-export let previewableItems: string[] = [];
-$: currentItemIdx = previewableItems.indexOf(file);
+// eslint-disable-next-line prefer-const
+let { file = $bindable(), previewableItems = [] }: { file?: string; previewableItems?: string[] } = $props();
 
-let isFullscreen = false;
+const currentItemIdx = $derived(previewableItems.indexOf(file || ''));
 
-$: fileUrl = `${$page.url.pathname}${$page.url.pathname === '/' ? '' : '/'}${file}`;
+let isFullscreen = $state(false);
 
-$: mime = mimeAdditions(file) || lookup(file.split('.')?.pop() || '');
+// TODO: fix after eslint-plugin-svelte as been updated
+// eslint-disable-next-line svelte/valid-compile
+const fileUrl = $derived(`${$page.url.pathname}${$page.url.pathname === '/' ? '' : '/'}${file}`);
+
+const mime = $derived(mimeAdditions(file || '') || lookup((file || '').split('.')?.pop() || ''));
 // svelte doesn't have switch blocks, so I instead opt for a bunch of separate blocks.....
-$: isImage = mime && mime?.includes('image');
-$: isVideo = mime && mime?.includes('video');
+const isImage = $derived(mime && mime?.includes('image'));
+const isVideo = $derived(mime && mime?.includes('video'));
 
-$: isText = mime && isTextCheck(mime);
-$: idPdf = mime && mime?.includes('pdf');
+const isText = $derived(mime && isTextCheck(mime));
+const idPdf = $derived(mime && mime?.includes('pdf'));
 
-let isPortrait = browser ? (window?.screen?.height > window?.screen?.width ? true : false) : false;
+let isPortrait = $state(browser ? (window?.screen?.height > window?.screen?.width ? true : false) : false);
 
-// eslint-disable-next-line no-console
-$: console.log(isPortrait);
+$inspect(isPortrait);
 
 const getHighlightedText = async (url: string) => {
     try {
@@ -109,10 +111,10 @@ onMount(() => {
     };
 });
 
-let previewElement: HTMLElement | undefined;
+let previewElement: HTMLElement | undefined = $state();
 
-let itemSizeStr = '';
-let itemSizePrcnt = '';
+let itemSizeStr = $state('');
+let itemSizePrcnt = $state('');
 
 const calculateSizePrcnt = () => {
     const fullSize = itemSizeStr.split(' x ').map((s) => parseInt(s, 10));
@@ -126,7 +128,7 @@ const calculateSizePrcnt = () => {
 
 const previewElementObserver = browser ? new ResizeObserver(calculateSizePrcnt) : undefined;
 
-afterUpdate(() => {
+$effect(() => {
     if (previewElement?.tagName === 'IMG') {
         previewElement.onload = () => {
             itemSizeStr = `${(previewElement as HTMLImageElement).naturalWidth} x ${
@@ -154,7 +156,7 @@ afterUpdate(() => {
         <button
             transition:fade="{{ duration: 200 }}"
             class="scrim"
-            on:click="{() => {
+            onclick="{() => {
                 if (isFullscreen) {
                     return;
                 }
@@ -162,7 +164,7 @@ afterUpdate(() => {
             }}"></button>
         <div
             class="container {isFullscreen ? 'fullscreen' : ''} {isPortrait ? 'portrait' : ''}"
-            transition:scaleFromId="{{ id: file, duration: 250 }}">
+            transition:scaleFromId|local="{{ id: file, duration: 250 }}">
             {#if isImage}
                 {#key file}
                     <img src="{fileUrl}" alt="preview" bind:this="{previewElement}" transition:fade />
@@ -170,7 +172,7 @@ afterUpdate(() => {
             {/if}
             {#if isVideo}
                 {#key file}
-                    <!-- svelte-ignore a11y-media-has-caption -->
+                    <!-- svelte-ignore a11y_media_has_caption -->
                     <video controls bind:this="{previewElement}" transition:fade>
                         <source src="{fileUrl}" type="{mime || ''}" />
                         Your browser does not support the video tag.
@@ -181,6 +183,7 @@ afterUpdate(() => {
                 {#key file}
                     <!-- svelte-ignore a11y-missing-attribute -->
                     <object
+                        title="pdf"
                         transition:fade
                         bind:this="{previewElement}"
                         data="{`${fileUrl}#toolbar=1`}"
@@ -213,7 +216,7 @@ afterUpdate(() => {
                                     class="hljs"
                                     contenteditable="true"
                                     style="outline: transparent;"
-                                    on:keypress="{(e) => {
+                                    onkeypress="{(e) => {
                                         e.preventDefault();
                                     }}">{@html res}</code></pre>
                         </div>
@@ -238,20 +241,20 @@ afterUpdate(() => {
                     <button
                         class="bar-button"
                         disabled="{currentItemIdx <= 0}"
-                        on:click="{() => {
+                        onclick="{() => {
                             file = previewableItems[currentItemIdx - 1];
                         }}"><ChevronLeft /></button>
                     <span>{currentItemIdx + 1} / {previewableItems.length}</span>
                     <button
                         class="bar-button"
                         disabled="{currentItemIdx + 1 >= previewableItems.length}"
-                        on:click="{() => {
+                        onclick="{() => {
                             file = previewableItems[currentItemIdx + 1];
                         }}"><ChevronRight /></button>
                 </div>
             {/if}
             <div>
-                <button class="bar-button" on:click="{() => (isFullscreen = !isFullscreen)}">
+                <button class="bar-button" onclick="{() => (isFullscreen = !isFullscreen)}">
                     {#if isFullscreen}
                         <div class="icon-wrapper" transition:fade="{{ duration: 100 }}">
                             <FullscreenExitIcon />
@@ -264,7 +267,7 @@ afterUpdate(() => {
                 </button>
                 <a class="bar-button" data-sveltekit-reload target="_blank" href="{fileUrl}"
                     ><DownloadIcon /></a>
-                <button class="bar-button" on:click="{close}"><CloseIcon /></button>
+                <button class="bar-button" onclick="{close}"><CloseIcon /></button>
             </div>
         </div>
     {/if}
