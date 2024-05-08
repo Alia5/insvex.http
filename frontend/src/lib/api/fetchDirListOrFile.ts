@@ -15,9 +15,10 @@ export interface PagedDirList {
 
 export const fetchDirListOrFile = async (forHost: string, path: string, thumbName?: string, page?: string) => {
 
-
-    const host = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST || process?.env?.INSVEX_HOST;
-    const port = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT || process?.env?.INSVEX_PORT;
+    const host = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST || process?.env?.INSVEX_PUBLIC_HOST
+    || env.INSVEX_HOST || import.meta.env.INSVEX_HOST || process?.env?.INSVEX_HOST || 'localhost';
+    const port = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT || process?.env?.INSVEX_PUBLIC_PORT
+    || env.INSVEX_PORT || import.meta.env.INSVEX_PORT || process?.env?.INSVEX_PORT || '7069';
 
     let fetchUrl = '';
     if (import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME)

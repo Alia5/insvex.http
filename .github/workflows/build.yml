@@ -39,8 +39,8 @@ jobs:
           INSVEX_ALLOWED_DIRS: '*'
           INSVEX_THUMB_DIR: thumbs
           INSVEX_THUMB_SIZE: 256
-          INSVEX_PUBLIC_HOST: ''
-          INSVEX_PUBLIC_PORT: ''
+          INSVEX_PUBLIC_HOST: 'localhost'
+          INSVEX_PUBLIC_PORT: '7069'
           INSVEX_BUILDCONFIG_SPA: false
           INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
           INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''

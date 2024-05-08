@@ -5,7 +5,7 @@ import type { LayoutData } from './$types';
 import Header from './Header.svelte';
 import './styles.pcss';
 import 'unfonts.css';
-import { links } from 'unplugin-fonts/head';
+// import { links } from 'unplugin-fonts/head';
 
 const { data, children }: { data: LayoutData; children: Snippet } = $props();
 
@@ -21,8 +21,6 @@ onNavigate((navigation) => {
         });
     });
 });
-
-$inspect(links);
 </script>
 
 <svelte:head>
