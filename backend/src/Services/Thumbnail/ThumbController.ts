@@ -12,6 +12,7 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
 
     private mappedDirs: string[];
     private config: InsvexConfig;
+    private isCreatingVideoThumb: boolean;
 
     public constructor(eventAdapter: undefined, databaseAdapter: ThumbDbAdapter) {
         super(undefined, databaseAdapter);
@@ -22,6 +23,7 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
         mkdirSync(resolve(fullResolve(this.config.thumbDir)), { recursive: true });
 
         this.installWatchers();
+        this.isCreatingVideoThumb = false;
     }
 
     private installWatchers() {
@@ -77,8 +79,8 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
             throw new Error('Thumb generation not possible');
         }
 
+        const mime = lookup(path.split('.')?.pop() || '');
         const shouldCrop = () => {
-            const mime = lookup(path.split('.')?.pop() || '');
             const noCrop = mime && mime.startsWith('video');
             return !noCrop;
         };
@@ -87,6 +89,10 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
         const thumbPath = resolve(fullResolve(this.config.thumbDir), thumbFileName + '.png');
         try {
             this.logger.debug('Generating thumb for', path);
+            if (this.isCreatingVideoThumb) {
+                await new Promise((res) => setTimeout(res, 1000));
+                this.isCreatingVideoThumb = true;
+            }
             await process(path, thumbPath, {
                 width: this.config.thumbSize,
                 height: this.config.thumbSize,
@@ -94,6 +100,9 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
                 crop: shouldCrop(),
                 thumbnail: true
             });
+            if (this.isCreatingVideoThumb) {
+                this.isCreatingVideoThumb = false;
+            }
         } catch (e) {
             this.logger.error(e);
             void this.databaseAdapter.addThumb(path, 'error');
