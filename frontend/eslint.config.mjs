@@ -28,6 +28,7 @@ export default tseslint.config(
             '*.cjs',
             '*.html',
             'postcss.config.js',
+            "eslint.config.mjs",
             'svelte.config.js',
             'vite.config.js',
             'eslint.config.js',
@@ -47,7 +48,7 @@ export default tseslint.config(
                 sourceType: 'module',
                 ecmaVersion: 2020,
                 project: './tsconfig.json',
-                extraFileExtensions: ['.svelte', '.svelte.ts'],
+                extraFileExtensions: ['.svelte', '.svelte.ts', ".ts"],
             },
         },
         rules: {
@@ -107,7 +108,7 @@ export default tseslint.config(
                     SwitchCase: 1
                 }
             ],
-    
+
             '@typescript-eslint/explicit-member-accessibility': [
                 'error',
                 {
@@ -175,13 +176,13 @@ export default tseslint.config(
             'object-curly-spacing': ['error', 'always'],
             // 'import/no-deprecated': 'warn', // eslint deprecation rule sucks. just wrns on deprecated IMPORTs
             'tsdoc/syntax': 'off'
-    
+
             // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
             // e.g. '@typescript-eslint/explicit-function-return-type': 'off',
         },
     },
     {
-        files: ['*.svelte', '**/*.svelte', "**/*.svelte.ts"],
+        files: ['*.svelte', '**/*.svelte'],
         languageOptions: {
             parser: svelteEslintParser,
             parserOptions: {
@@ -204,6 +205,15 @@ export default tseslint.config(
                 "proseWrap": "preserve",
                 "plugins": ["prettier-plugin-svelte"],
             }],
+        }
+    },
+    {
+        files: ["*.svelte.ts", "**/*.svelte.ts"],
+        languageOptions: {
+            parser: svelteEslintParser,
+            parserOptions: {
+                parser: tseslint.parser,
+            }
         }
     }
 );
