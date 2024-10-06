@@ -1,6 +1,6 @@
 <script lang="ts">
 import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
+import { goto, invalidateAll } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 import type { PageData } from './$types';
 import { lookup } from 'mime-types';
@@ -10,6 +10,7 @@ import { onMount } from 'svelte';
 import ItemCard from './ItemCard.svelte';
 import { mimeAdditions } from './mime-patches';
 import type { DirList } from '$lib/api/fetchDirListOrFile';
+import { applyAction, enhance } from '$app/forms';
 
 const { data }: { data: PageData } = $props();
 
@@ -35,6 +36,9 @@ const thumbPrefixPath = $derived(`${thumbHost}${data.currentPath === '/' ? '' : 
 let files: DirList = $state(data.dirList.files || []);
 let path: string | undefined = $state(data.currentPath);
 let page = $state(data.dirList.page);
+const unauthorized = $state(data.unauthorized || false);
+let loading = $state(false);
+
 $effect(() => {
     if (path === data.currentPath) {
         if (page > data.dirList.page) {
@@ -100,77 +104,104 @@ onMount(() => {
     <meta name="description" content="Insvex.http" />
 </svelte:head>
 
-<section onscroll="{handleInfScroll}">
-    <div class="file-grid">
-        {#if data.path !== '/'}
-            {#key '..'}
-                <ItemCard
-                    link
-                    file="{{
-                        isDir: true,
-                        path: '..'
-                    }}"
-                    isScrolling="{isScrolling}"
-                    thumbPrefixPath="{thumbPrefixPath}"
-                    currentPath="{data.currentPath}" />
-            {/key}
-        {/if}
-        {#each files as file (file.path)}
-            {#if file.isDir || !previewSupportsType(getMime(file.path) || '')}
-                <ItemCard
-                    link
-                    file="{file}"
-                    isScrolling="{isScrolling}"
-                    thumbPrefixPath="{thumbPrefixPath}"
-                    currentPath="{data.currentPath}" />
-            {:else}
-                <ItemCard
-                    file="{file}"
-                    isScrolling="{isScrolling}"
-                    thumbPrefixPath="{thumbPrefixPath}"
-                    currentPath="{data.currentPath}"
-                    onclick="{() => {
-                        currentFile = file.path;
-                    }}" />
+{#if unauthorized}
+    <section>
+        <div class="centered">
+            <form
+                method="post"
+                use:enhance="{async () => {
+                    loading = true;
+                    return async ({ update, result }) => {
+                        await update({ reset: false });
+                        loading = false;
+                        await applyAction(result);
+                        // data-loading workaround...
+                        await window.location.reload();
+                    };
+                }}">
+                <h1>Login Required</h1>
+                <input type="text" name="user" placeholder="Username" />
+                <input type="password" name="password" placeholder="Password" />
+                {#if loading}
+                    <LoadingSpinner />
+                {:else}
+                    <button>Login</button>
+                {/if}
+            </form>
+        </div>
+    </section>
+{:else}
+    <section onscroll="{handleInfScroll}">
+        <div class="file-grid">
+            {#if data.path !== '/'}
+                {#key '..'}
+                    <ItemCard
+                        link
+                        file="{{
+                            isDir: true,
+                            path: '..'
+                        }}"
+                        isScrolling="{isScrolling}"
+                        thumbPrefixPath="{thumbPrefixPath}"
+                        currentPath="{data.currentPath}" />
+                {/key}
             {/if}
-        {/each}
-    </div>
-    <div class="load-more-container" no-js-hidden>
-        {#if data.dirList.page < data.dirList.totalPages}
-            <!-- <a href="?page={data.dirList.page + 1}">Load more</a> -->
-            {#if !loadingMore}
-                <button
-                    onclick="{() => {
-                        loadingMore = true;
-                        void goto(`?page=${data.dirList.page + 1}`, {
-                            replaceState: true,
-                            noScroll: true
-                        }).finally(() => {
-                            loadingMore = false;
-                        });
-                    }}">
-                    Load more
-                </button>
-            {:else}
-                <LoadingSpinner />
-            {/if}
-        {/if}
-    </div>
-    <div class="pager" no-js-shown>
-        <div>
-            {#if data.dirList.page > 1}
-                <a href="?page={data.dirList.page - 1}">Previous Page</a>
-            {:else}
-                <span></span>
-            {/if}
+            {#each files as file (file.path)}
+                {#if file.isDir || !previewSupportsType(getMime(file.path) || '')}
+                    <ItemCard
+                        link
+                        file="{file}"
+                        isScrolling="{isScrolling}"
+                        thumbPrefixPath="{thumbPrefixPath}"
+                        currentPath="{data.currentPath}" />
+                {:else}
+                    <ItemCard
+                        file="{file}"
+                        isScrolling="{isScrolling}"
+                        thumbPrefixPath="{thumbPrefixPath}"
+                        currentPath="{data.currentPath}"
+                        onclick="{() => {
+                            currentFile = file.path;
+                        }}" />
+                {/if}
+            {/each}
+        </div>
+        <div class="load-more-container" no-js-hidden>
             {#if data.dirList.page < data.dirList.totalPages}
-                <a href="?page={data.dirList.page + 1}">Next Page</a>
-            {:else}
-                <span></span>
+                <!-- <a href="?page={data.dirList.page + 1}">Load more</a> -->
+                {#if !loadingMore}
+                    <button
+                        onclick="{() => {
+                            loadingMore = true;
+                            void goto(`?page=${data.dirList.page + 1}`, {
+                                replaceState: true,
+                                noScroll: true
+                            }).finally(() => {
+                                loadingMore = false;
+                            });
+                        }}">
+                        Load more
+                    </button>
+                {:else}
+                    <LoadingSpinner />
+                {/if}
             {/if}
         </div>
-    </div>
-    <!-- eslint-disable prettier/prettier -->
+        <div class="pager" no-js-shown>
+            <div>
+                {#if data.dirList.page > 1}
+                    <a href="?page={data.dirList.page - 1}">Previous Page</a>
+                {:else}
+                    <span></span>
+                {/if}
+                {#if data.dirList.page < data.dirList.totalPages}
+                    <a href="?page={data.dirList.page + 1}">Next Page</a>
+                {:else}
+                    <span></span>
+                {/if}
+            </div>
+        </div>
+        <!-- eslint-disable prettier/prettier -->
     <PreviewPopup
         bind:file="{currentFile}"
         previewableItems="{(files || [])
@@ -178,6 +209,7 @@ onMount(() => {
             .map((f) => f.path)
         }" />
 </section>
+{/if}
 
 <style lang="postcss">
 section {
@@ -185,6 +217,20 @@ section {
     height: 100%;
     overflow: auto;
     padding: 1em;
+}
+
+.centered {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    & > :first-child {
+        display: grid;
+        gap: 1em;
+        & > :first-child {
+            font-size: 2em;
+        }
+    }
 }
 
 .file-grid {

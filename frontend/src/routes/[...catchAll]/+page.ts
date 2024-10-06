@@ -40,43 +40,62 @@ if (import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME) {
 }
 
 export const load: PageLoad = async (event: LoadEvent) => {
-    let dirList = (event.data as { dirList: Promise<PagedDirList>}|undefined)?.dirList;
+    try {
+        let dirList = (event.data as { dirList: Promise<PagedDirList>}|undefined)?.dirList;
 
-    if (!dirList) {
-        const fetchResponse = (await fetchDirListOrFile(
-            event.url.host,
-            event.url.pathname,
-            undefined,
-            event.url.searchParams.get('page') || undefined
-        ));
+        if (!dirList) {
+            const fetchResponse = (await fetchDirListOrFile(
+                event.fetch,
+                event.url.host,
+                event.url.pathname,
+                undefined,
+                event.url.searchParams.get('page') || undefined,
+                event.data?.JWT
+            ));
 
-        if (fetchResponse) {
-            if (import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME) {
-                dirList = fetchResponse.json().then((r: NginXDirList) => ({
-                    page: 1,
-                    totalPages: 1,
-                    totalFiles: r.length,
-                    files: r.filter(
-                        (f) =>
-                            !excludedFiles.includes(f.name) && !f.name.startsWith('.')
-                    ).map((f) => ({
-                        path: f.name,
-                        isDir: f.type === 'directory'
-                    }))
-                } satisfies PagedDirList ));
-            } else {
-                dirList = (fetchResponse.json()) as Promise<PagedDirList>;
+            if (fetchResponse) {
+                if (import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME) {
+                    dirList = fetchResponse.json().then((r: NginXDirList) => ({
+                        page: 1,
+                        totalPages: 1,
+                        totalFiles: r.length,
+                        files: r.filter(
+                            (f) =>
+                                !excludedFiles.includes(f.name) && !f.name.startsWith('.')
+                        ).map((f) => ({
+                            path: f.name,
+                            isDir: f.type === 'directory'
+                        }))
+                    } satisfies PagedDirList ));
+                } else {
+                    dirList = (fetchResponse.json()) as Promise<PagedDirList>;
+                }
             }
         }
-    }
 
-    return {
-        dirList: await dirList ||  {
-            page: 1,
-            totalPages: 1,
-            totalFiles: 0,
-            files: []
-        } satisfies PagedDirList,
-        currentPath: event.url.pathname
-    };
+        return {
+            dirList: await dirList ||  {
+                page: 1,
+                totalPages: 1,
+                totalFiles: 0,
+                files: []
+            } satisfies PagedDirList,
+            currentPath: event.url.pathname,
+            unauthorized: false
+        };
+    } catch (e) {
+        if ((e as Record<string, unknown>).status === 401) {
+            return {
+                dirList: {
+                    page: 1,
+                    totalPages: 1,
+                    totalFiles: 0,
+                    files: []
+                } satisfies PagedDirList,
+                currentPath: event.url.pathname,
+                unauthorized: true
+            };
+        }
+        throw e;
+    }
 };

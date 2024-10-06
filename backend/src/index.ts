@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { Logger, initServices, setJwtOptions, setJwtSecrets } from 'fliessheck';
+import { Logger, initServices, setJwtOptions } from 'fliessheck';
 import * as http from 'http';
 import folderListService from './Services/FilesList';
 import thumbService from './Services/Thumbnail';
+import authService from './Services/Auth';
 import { getConfig } from './config';
 
 import Database from 'better-sqlite3';
@@ -30,14 +31,13 @@ const main = async () => {
     }));
     expressApp.use(express.urlencoded({ extended: false }));
     expressApp.use(express.json());
-    setJwtSecrets('ChangeMySuperDuperSecret');
     setJwtOptions({  expiresIn: '1d' });
 
     const db = new Database('thumbs.db');
     db.pragma('journal_mode = WAL');
 
 
-    initServices([folderListService, thumbService], expressApp as never, undefined, db);
+    initServices([folderListService, thumbService, authService], expressApp as never, undefined, db);
 
     if (frontend) {
         expressApp.use(frontend.handler);

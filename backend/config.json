@@ -8,5 +8,11 @@
         "*": "sample"
     },
     "thumbDir": "thumbs",
-    "thumbSize": 256
+    "thumbSize": 256,
+    "auth": {
+        "*": {
+            "username": "admin",
+            "password": "admin"
+        }
+    }
 }

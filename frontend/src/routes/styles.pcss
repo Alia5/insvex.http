@@ -4,8 +4,8 @@
         --textAlpha: 0.95;
         --textColor: rgb(255 255 255 / var(--textAlpha));
         --colorPrimary: #1f64d4;
-        --colorPrimaryHover: #273a55;
-        --colorPrimaryActive: #35598b;
+        --colorPrimaryHover: #414141;
+        --colorPrimaryActive: #474747;
         --cardColor: #3a3b3d;
         --backgroundColor: #202125;
         --shadowColor: #00000050;
@@ -21,8 +21,8 @@
         --textAlpha: 1;
         --textColor: rgb(0 0 0 / var(--textAlpha));
         --colorPrimary: #273346;
-        --colorPrimaryHover: #273a55;
-        --colorPrimaryActive: #35598b;
+        --colorPrimaryHover: #494949;
+        --colorPrimaryActive: #525252;
         --cardColor: #f7f7f7;
         --backgroundColor: #dbe4e4;
         --shadowColor: #00000030;
@@ -36,8 +36,8 @@
     --textAlpha: 0.95;
     --textColor: rgb(255 255 255 / var(--textAlpha));
     --colorPrimary: #1f64d4;
-    --colorPrimaryHover: #273a55;
-    --colorPrimaryActive: #35598b;
+    --colorPrimaryHover: #414141;
+    --colorPrimaryActive: #474747;
     --cardColor: #3a3b3d;
     --backgroundColor: #202125;
     --shadowColor: #00000050;
@@ -50,8 +50,8 @@
     --textAlpha: 1;
     --textColor: rgb(0 0 0 / var(--textAlpha));
     --colorPrimary: #273346;
-    --colorPrimaryHover: #273a55;
-    --colorPrimaryActive: #35598b;
+    --colorPrimaryHover: #494949;
+    --colorPrimaryActive: #525252;
     --cardColor: #f7f7f7;
     --backgroundColor: #dbe4e4;
     --shadowColor: #00000030;
@@ -184,14 +184,17 @@ button {
 }
 
 input:not([type='checkbox']) {
-    background-color: var(--colorPrimary);
-    border: 1px solid transparent;
+    background-color: transparent;
+    border: 1px solid color-mix(in srgb, var(--textColor), transparent 60%);
+    cursor: pointer;
     outline: 1px solid transparent;
-    padding: 0.25em 0.5em;
+    padding: 1rem;
     color: var(--textColor);
     border-radius: 0.5rem;
+    margin: 0.25rem;
     box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.1);
     transition: all 0.2s ease-in-out;
+    display: flex;
     &::placeholder {
         color: var(--textColor);
         opacity: 0.5;

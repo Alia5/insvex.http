@@ -1,10 +1,37 @@
-import { BadRequestError, ForbiddenError, HeaderAccessor, HttpAdapter, NotFoundError, RequestParams } from 'fliessheck';
+import {
+    BadRequestError,
+    ForbiddenError,
+    HeaderAccessor,
+    HttpAdapter,
+    jwtAuth,
+    Middleware,
+    NotFoundError,
+    RequestParams
+} from 'fliessheck';
 import { FilesController } from './FilesController';
 import { getConfig } from '../../config';
 import { DirectoryNotAllowed, HostNotRegistered, IsDirError, NotFileError } from './Errors';
 
 export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
 
+    @Middleware((req, res, next) => {
+        const config = getConfig();
+        if (config.auth) {
+
+            const host = req.params.host
+            || req.headers.host || '';
+
+            if (config.auth['*'] || config.auth[host]) {
+                // TODO: check JWT is issued for host.
+                return jwtAuth({
+                    algorithms: ['HS256'],
+                    maxAge: '5d'
+                })(req, res, next);
+            }
+            return next();
+        }
+        return next();
+    })
     public override async find(params: RequestParams, header: HeaderAccessor) {
         const host = params.url.host
         || header.get('host')

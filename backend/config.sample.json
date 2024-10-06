@@ -8,5 +8,11 @@
         "*":  "/path/to/indexedDir"
     },
     "thumbDir": "thumbs",
-    "thumbSize": 256
+    "thumbSize": 256,
+    "auth": {
+        "host": {
+            "username": "admin",
+            "password": "admin"
+        }
+    }
 }

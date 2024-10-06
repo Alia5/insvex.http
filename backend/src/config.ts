@@ -8,6 +8,10 @@ export interface InsvexConfig {
     hostDirMap: Record<string, string>;
     thumbDir: string;
     thumbSize: number;
+    auth?: Record<string, {
+        username: string;
+        password: string;
+    }>;
 }
 
 const safeParseJSON = (str: string | undefined): unknown => {
@@ -40,7 +44,8 @@ export const handleConfig = (): InsvexConfig => {
             '*': '.'
         },
         thumbDir: process.env.INSVEX_THUMB_DIR || fileConfig.thumbDir || 'thumbs',
-        thumbSize: process.env.INSVEX_THUMB_SIZE ? parseInt(process.env.INSVEX_THUMB_SIZE) : fileConfig.thumbSize || 256
+        thumbSize: process.env.INSVEX_THUMB_SIZE ? parseInt(process.env.INSVEX_THUMB_SIZE) : fileConfig.thumbSize || 256,
+        auth: fileConfig.auth
     };
 
     writeFileSync('config.json', JSON.stringify(config, undefined, 4));

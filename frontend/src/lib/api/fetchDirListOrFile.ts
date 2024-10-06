@@ -13,7 +13,7 @@ export interface PagedDirList {
     files: DirList;
 }
 
-export const fetchDirListOrFile = async (forHost: string, path: string, thumbName?: string, page?: string) => {
+export const fetchDirListOrFile = async (fetchFn: typeof fetch, forHost: string, path: string, thumbName?: string, page?: string, JWT?: string) => {
 
     const host = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST || process?.env?.INSVEX_PUBLIC_HOST
     || env.INSVEX_HOST || import.meta.env.INSVEX_HOST || process?.env?.INSVEX_HOST || 'localhost';
@@ -40,12 +40,26 @@ export const fetchDirListOrFile = async (forHost: string, path: string, thumbNam
             page ? `?page=${page}` : ''
         }`;
     }
-    const fetchResponse = await fetch(fetchUrl);
+    const fetchResponse = await fetchFn(fetchUrl, {
+        headers: {
+            Authorization: JWT ? `Bearer ${JWT}` : ''
+        }
+    });
 
     if (fetchResponse?.status < 200 || fetchResponse?.status >= 300) {
+        let isJson = false;
+        if (fetchResponse.headers.has('content-type')) {
+            // stupid workaround
+            fetchResponse.headers.values().forEach((v) => {
+                if (v.includes('application/json')) {
+                    isJson = true;
+                }
+            });
+            // isJson = fetchResponse.headers.get('content-type')?.includes('application/json') || false;
+        }
         throw error(
             fetchResponse.status,
-            fetchResponse.headers.get('Content-Type')?.includes('application/json')
+            isJson
                 ? await fetchResponse.json()
                 : await fetchResponse.text()
         );
