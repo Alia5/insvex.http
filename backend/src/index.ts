@@ -37,7 +37,7 @@ const main = async () => {
     db.pragma('journal_mode = WAL');
 
 
-    initServices([folderListService, thumbService, authService], expressApp as never, undefined, db);
+    initServices([folderListService, authService, thumbService], expressApp as never, undefined, db);
 
     if (frontend) {
         expressApp.use(frontend.handler);

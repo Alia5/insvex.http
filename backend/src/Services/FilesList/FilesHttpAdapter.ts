@@ -1,5 +1,6 @@
 import {
     BadRequestError,
+    decodeJwt,
     ForbiddenError,
     HeaderAccessor,
     HttpAdapter,
@@ -22,7 +23,12 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
             || req.headers.host || '';
 
             if (config.auth['*'] || config.auth[host]) {
-                // TODO: check JWT is issued for host.
+
+                const jwt = decodeJwt(req.headers.authorization || '', { algorithms: ['HS256'] });
+                if (jwt && typeof jwt !== 'string' && jwt?.host !== host) {
+                    throw new ForbiddenError('Invalid JWT');
+                }
+
                 return jwtAuth({
                     algorithms: ['HS256'],
                     maxAge: '5d'
