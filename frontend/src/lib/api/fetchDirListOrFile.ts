@@ -50,7 +50,7 @@ export const fetchDirListOrFile = async (fetchFn: typeof fetch, forHost: string,
         let isJson = false;
         if (fetchResponse.headers.has('content-type')) {
             // stupid workaround
-            fetchResponse.headers.values().forEach((v) => {
+            [...fetchResponse.headers.values()]?.forEach?.((v) => {
                 if (v.includes('application/json')) {
                     isJson = true;
                 }
