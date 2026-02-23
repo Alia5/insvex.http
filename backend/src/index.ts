@@ -29,8 +29,8 @@ const main = async () => {
     expressApp.use(cors({
         origin: '*'
     }));
-    expressApp.use(express.urlencoded({ extended: false }));
-    expressApp.use(express.json());
+    expressApp.use('/api', express.urlencoded({ extended: false }));
+    expressApp.use('/api', express.json());
     setJwtOptions({  expiresIn: '1d' });
 
     const db = new Database('thumbs.db');
