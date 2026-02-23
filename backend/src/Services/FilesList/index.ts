@@ -4,7 +4,7 @@ import { FilesHttpAdapter } from './FilesHttpAdapter';
 const serviceConfig: ServiceConfig<FilesController> = {
     controller: FilesController,
     httpAdapter: {
-        path: 'api/files/:host?/:path(*)?',
+        path: 'api/files/{:host}{/*path}',
         adapter: FilesHttpAdapter
     }
 };

@@ -42,7 +42,7 @@ export class FilesController extends Controller {
     }
 
 
-    public  listDirForHost(host: string, path?: string, page = 1): PagedDirList {
+    public listDirForHost(host: string, path?: string, page = 1): PagedDirList {
         const absolutePath = this.getAbsolutePathForHost(host);
         const files = readdirSync(resolve(absolutePath, path || ''), { withFileTypes: true, recursive: false })
             .map((f) => ({
@@ -55,7 +55,7 @@ export class FilesController extends Controller {
                 return a.isDir ? -1 : 1;
             });
         const totalFiles = files.length;
-        files.splice(0, page <= 0 ? 0 :(page - 1) * PAGE_SIZE);
+        files.splice(0, page <= 0 ? 0 : (page - 1) * PAGE_SIZE);
         if (page > 0) {
             files.length = files.length < PAGE_SIZE ? files.length : PAGE_SIZE;
         }
@@ -74,19 +74,19 @@ export class FilesController extends Controller {
         page = 1
     ) {
         const basePath = this.getAbsolutePathForHost(host);
-        const filePath = resolve(basePath, path);
+        const filePath = resolve(basePath, Array.isArray(path) ? path[0] : path);
         if (!existsSync(filePath)) {
             throw new NotFoundError(`${path} not found`);
         }
         const fStat = await stat(filePath);
-        if (fStat.isDirectory() ) {
+        if (fStat.isDirectory()) {
             // throw new IsDirError(`${path} is dir`);
-            return this.listDirForHost(host, path, page);
+            return this.listDirForHost(host, Array.isArray(path) ? path[0] : path, page);
         }
-        if (!fStat.isFile() ) {
+        if (!fStat.isFile()) {
             throw new NotFileError(`${path} is not a file`);
         }
-        return sendFileFn(path, {
+        return sendFileFn(Array.isArray(path) ? path[0] : path, {
             root: basePath,
             dotfiles: 'allow'
         });
@@ -104,10 +104,10 @@ export class FilesController extends Controller {
             throw new NotFoundError(`${path} not found`);
         }
         const fStat = await stat(filePath);
-        if (fStat.isDirectory() ) {
+        if (fStat.isDirectory()) {
             throw new IsDirError(`${path} is dir`);
         }
-        if (!fStat.isFile() ) {
+        if (!fStat.isFile()) {
             throw new NotFileError(`${path} is not a file`);
         }
 

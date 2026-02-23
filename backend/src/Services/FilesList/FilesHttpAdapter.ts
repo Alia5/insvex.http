@@ -20,11 +20,11 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
         if (config.auth) {
 
             const host = req.params.host
-            || req.headers.host || '';
+                || req.headers.host || '';
 
             if (config.auth['*'] || config.auth[host]) {
 
-                const jwt = decodeJwt(req.headers.authorization || '', { algorithms: ['HS256'] });
+                const jwt = decodeJwt(req.headers.authorization || '', {});
                 if (jwt && typeof jwt !== 'string' && jwt?.host !== host) {
                     throw new ForbiddenError('Invalid JWT');
                 }
@@ -40,9 +40,9 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
     })
     public override async find(params: RequestParams, header: HeaderAccessor) {
         const host = params.url.host
-        || header.get('host')
-        || getConfig().hostDirMap?.[0]
-        || 'localhost';
+            || header.get('host')
+            || getConfig().hostDirMap?.[0]
+            || 'localhost';
         return this.getForHost(host, params);
     }
 
@@ -54,12 +54,12 @@ export class FilesHttpAdapter extends HttpAdapter<FilesController, unknown> {
         }
         if (params.url.path || params.query.thumb !== undefined) {
             if (params.query.thumb !== undefined) {
-                const thumb = Array.isArray(params.query.thumb) ? params.query.thumb.join('')  : params.query.thumb;
+                const thumb = Array.isArray(params.query.thumb) ? params.query.thumb.join('') : params.query.thumb;
                 if (typeof thumb === 'string' && thumb.length > 0) {
                     const thumbPath = params.url.path?.endsWith('/')
                         ? params.url.path + thumb
                         : (params.url.path ?? '') + '/' + thumb;
-                    return this.serveThumb(host, thumbPath.startsWith('/') ? thumbPath.slice(1) :  thumbPath);
+                    return this.serveThumb(host, thumbPath.startsWith('/') ? thumbPath.slice(1) : thumbPath);
                 }
                 if (params.url.path) {
                     return this.serveThumb(host, params.url.path);
