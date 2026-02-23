@@ -44,7 +44,7 @@ onNavigate((navigation) => {
         }
         </style>
     </noscript>
-    <Header host="{data.host}" path="{data.path}" />
+    <Header host={data.host} path={data.path} />
     <main>
         {@render children()}
     </main>

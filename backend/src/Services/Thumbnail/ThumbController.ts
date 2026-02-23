@@ -55,6 +55,7 @@ export class ThumbController extends Controller<undefined, ThumbDbAdapter> {
                             this.getThumb(path)
                                 .then(() => undefined)
                                 .catch(() => {
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                                     undefined;
                                 });
                         }

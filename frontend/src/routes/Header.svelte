@@ -1,5 +1,6 @@
 <script lang="ts">
 import { browser } from '$app/environment';
+import { resolve } from '$app/paths';
 import { onMount } from 'svelte';
 import IconMenu from '~icons/material-symbols/menu';
 
@@ -39,7 +40,7 @@ onMount(() => {
     <button no-js-hidden style="width: 0; padding: 0;"><IconMenu /></button>
     <div no-js-shown></div>
     <div class="breadcrumbs">
-        <a href="/">{host}</a>
+        <a href={resolve('/')}>{host}</a>
         {#each path
             .split('/')
             .filter((p) => !!p)
@@ -48,16 +49,11 @@ onMount(() => {
                 return parts.join('/');
             }) as part (part)}
             <span>/</span>
-            <a href="/{part}">{part.split('/').pop()}</a>
+            <a href={resolve(`/${part}`)}>{part.split('/').pop()}</a>
         {/each}
     </div>
 
-    <input
-        no-js-hidden
-        type="checkbox"
-        class="toggle"
-        checked="{!darkMode}"
-        onchange="{() => toggleTheme()}" />
+    <input no-js-hidden type="checkbox" class="toggle" checked={!darkMode} onchange={() => toggleTheme()} />
     <div no-js-shown class="no-js-hint">
         <span>Works best with Javascript enabled</span>
     </div>

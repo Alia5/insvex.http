@@ -15,9 +15,9 @@ const {
         cy="50%"
         r="20%"
         fill="none"
-        stroke-width="{typeof strokeWidth === 'string' ? strokeWidth : `${strokeWidth}px`}"
+        stroke-width={typeof strokeWidth === 'string' ? strokeWidth : `${strokeWidth}px`}
         stroke-miterlimit="10"
-        style="{`--color: ${color};`}"></circle>
+        style={`--color: ${color};`}></circle>
 </svg>
 
 <style lang="postcss">

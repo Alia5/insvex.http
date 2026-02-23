@@ -1,9 +1,7 @@
 <script lang="ts">
-import { page } from '$app/stores';
+import { page } from '$app/state';
 import type { DirList } from '$lib/api/fetchDirListOrFile';
 import Thumb from './Thumb.svelte';
-
-page;
 
 const {
     link = false,
@@ -22,37 +20,38 @@ const {
 } = $props();
 </script>
 
+<!-- eslint-disable svelte/no-navigation-without-resolve -->
 {#if link}
     <a
         class="item-card"
-        style="{isScrolling ? 'pointer-events: none' : ''}"
+        style={isScrolling ? 'pointer-events: none' : ''}
         href="{currentPath.endsWith('/') ? currentPath : currentPath + '/'}{file.path}"
-        data-sveltekit-reload="{file.isDir ? 'off' : true}">
-        <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
+        data-sveltekit-reload={file.isDir ? 'off' : true}>
+        <Thumb file={file.path} prefixPath={thumbPrefixPath} isDir={file.isDir} />
         <span
             >{file.path === '..'
-                ? $page.url?.toString()?.split('/')?.slice(-2, -1)?.[0] || '..'
+                ? page.url?.toString()?.split('/')?.slice(-2, -1)?.[0] || '..'
                 : file.path}</span>
     </a>
 {:else}
     <button
         no-js-hidden
         class="item-card"
-        style="{isScrolling ? 'pointer-events: none' : ''}"
-        onclick="{() => {
+        style={isScrolling ? 'pointer-events: none' : ''}
+        onclick={() => {
             onclick?.();
-        }}">
-        <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" />
+        }}>
+        <Thumb file={file.path} prefixPath={thumbPrefixPath} />
         <span>{file.path}</span>
     </button>
 
     <a
         no-js-shown
         class="item-card"
-        style="{isScrolling ? 'pointer-events: none' : ''}"
+        style={isScrolling ? 'pointer-events: none' : ''}
         href="{currentPath.endsWith('/') ? currentPath : currentPath + '/'}{file.path}"
-        data-sveltekit-reload="{file.isDir ? 'off' : true}">
-        <Thumb file="{file.path}" prefixPath="{thumbPrefixPath}" isDir="{file.isDir}" />
+        data-sveltekit-reload={file.isDir ? 'off' : true}>
+        <Thumb file={file.path} prefixPath={thumbPrefixPath} isDir={file.isDir} />
         <span>{file.path}</span>
     </a>
 {/if}

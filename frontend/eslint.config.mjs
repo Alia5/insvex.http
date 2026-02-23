@@ -1,8 +1,9 @@
 import { FlatCompat } from "@eslint/eslintrc";
+import stylistic from '@stylistic/eslint-plugin';
 import path from "path";
 import { fileURLToPath } from "url";
 
-// mimic CommonJS variables -- not needed if using CommonJS
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -11,11 +12,11 @@ const compat = new FlatCompat({
 });
 
 import js from "@eslint/js";
-import tseslint from 'typescript-eslint';
-import eslintPluginSvelte from 'eslint-plugin-svelte';
-import svelteEslintParser from 'svelte-eslint-parser';
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
+import eslintPluginSvelte from 'eslint-plugin-svelte';
 import globals from "globals";
+import svelteEslintParser from 'svelte-eslint-parser';
+import tseslint from 'typescript-eslint';
 
 
 export default tseslint.config(
@@ -24,37 +25,39 @@ export default tseslint.config(
     ...tseslint.configs.recommended,
     ...eslintPluginSvelte.configs['flat/recommended'],
     {
-        ignores: [
-            '*.cjs',
-            '*.html',
-            'postcss.config.js',
-            "eslint.config.mjs",
-            'svelte.config.js',
-            'vite.config.js',
-            'eslint.config.js',
-            ".svelte-kit/**/*",
-            "build/**/*"
-        ],
+        ignores: ['*.cjs', '*.html', 'postcss.config.js', 'svelte.config.js', 'eslint.config.js', ".svelte-kit/**/*", "build/**/*"],
     },
     {
+        files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+        ignores: ['e2e/**/*', 'playwright.config.ts'],
+        plugins: {
+            '@typescript-eslint': tseslint.plugin,
+            '@stylistic': stylistic
+        },
+
         languageOptions: {
             parser: tseslint.parser,
             globals: {
                 ...globals.browser,
                 ...globals.node,
                 ...globals.es2021,
+
             },
             parserOptions: {
                 sourceType: 'module',
                 ecmaVersion: 2020,
                 project: './tsconfig.json',
-                extraFileExtensions: ['.svelte', '.svelte.ts', ".ts"],
+                extraFileExtensions: ['.svelte'],
+                tsconfigRootDir: __dirname,
             },
         },
         rules: {
+            // typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
+            // see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
+            'no-undef': 'off',
             "prettier/prettier": "off",
             '@typescript-eslint/no-namespace': 'off',
-            '@typescript-eslint/ban-types': 'error',
+            // '@typescript-eslint/ban-types': 'error',
             '@typescript-eslint/adjacent-overload-signatures': 'error',
             '@typescript-eslint/array-type': 'error',
             '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
@@ -66,7 +69,7 @@ export default tseslint.config(
             '@typescript-eslint/prefer-namespace-keyword': 'error',
             'no-inner-declarations': 'off', // we have es6blocked scoped functions.
             '@typescript-eslint/triple-slash-reference': 'error',
-            '@typescript-eslint/type-annotation-spacing': 'error',
+            '@stylistic/type-annotation-spacing': 'error',
             '@typescript-eslint/unified-signatures': 'error',
             '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/no-unused-vars': 'error',
@@ -74,15 +77,15 @@ export default tseslint.config(
             '@typescript-eslint/no-floating-promises': 'error',
             '@typescript-eslint/no-unnecessary-type-assertion': 'error',
             'object-curly-spacing': ['error', 'always'],
-            '@typescript-eslint/semi': [
+            '@stylistic/semi': [
                 'error',
                 'always'
             ],
-            '@typescript-eslint/quotes': [
+            '@stylistic/quotes': [
                 'warn',
                 'single'
             ],
-            '@typescript-eslint/member-delimiter-style': [
+            '@stylistic/member-delimiter-style': [
                 'error',
                 {
                     multiline: {
@@ -95,7 +98,7 @@ export default tseslint.config(
                     }
                 }
             ],
-            '@typescript-eslint/indent': [
+            '@stylistic/indent': [
                 'warn',
                 4,
                 {
@@ -173,7 +176,6 @@ export default tseslint.config(
             'eol-last': 'error',
             'linebreak-style': ['error', 'unix'],
             'block-spacing': ['error', 'always'],
-            'object-curly-spacing': ['error', 'always'],
             // 'import/no-deprecated': 'warn', // eslint deprecation rule sucks. just wrns on deprecated IMPORTs
             'tsdoc/syntax': 'off'
 
@@ -187,7 +189,14 @@ export default tseslint.config(
             parser: svelteEslintParser,
             parserOptions: {
                 parser: tseslint.parser,
-            }
+                tsconfigRootDir: __dirname,
+            },
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                ...globals.es2021,
+
+            },
         },
         rules: {
             'prettier/prettier': ['warn', {
@@ -208,12 +217,22 @@ export default tseslint.config(
         }
     },
     {
-        files: ["*.svelte.ts", "**/*.svelte.ts"],
+        files: ['e2e/**/*.ts', 'playwright.config.ts'],
+        plugins: {
+            '@typescript-eslint': tseslint.plugin,
+            '@stylistic': stylistic
+        },
         languageOptions: {
-            parser: svelteEslintParser,
+            parser: tseslint.parser,
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                ...globals.es2021,
+            },
             parserOptions: {
-                parser: tseslint.parser,
-            }
-        }
+                sourceType: 'module',
+                ecmaVersion: 2020,
+            },
+        },
     }
 );

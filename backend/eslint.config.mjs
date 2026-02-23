@@ -52,7 +52,7 @@ export default tseslint.config(
         rules: {
             "prettier/prettier": "off",
             '@typescript-eslint/no-namespace': 'off',
-            '@typescript-eslint/ban-types': 'error',
+            // '@typescript-eslint/ban-types': 'error',
             '@typescript-eslint/adjacent-overload-signatures': 'error',
             '@typescript-eslint/array-type': 'error',
             '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
@@ -64,7 +64,7 @@ export default tseslint.config(
             '@typescript-eslint/prefer-namespace-keyword': 'error',
             'no-inner-declarations': 'off', // we have es6blocked scoped functions.
             '@typescript-eslint/triple-slash-reference': 'error',
-            '@typescript-eslint/type-annotation-spacing': 'error',
+            // '@typescript-eslint/type-annotation-spacing': 'error',
             '@typescript-eslint/unified-signatures': 'error',
             '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/no-unused-vars': 'error',
@@ -72,41 +72,7 @@ export default tseslint.config(
             '@typescript-eslint/no-floating-promises': 'error',
             '@typescript-eslint/no-unnecessary-type-assertion': 'error',
             'object-curly-spacing': ['error', 'always'],
-            '@typescript-eslint/semi': [
-                'error',
-                'always'
-            ],
-            '@typescript-eslint/quotes': [
-                'warn',
-                'single'
-            ],
-            '@typescript-eslint/member-delimiter-style': [
-                'error',
-                {
-                    multiline: {
-                        delimiter: 'semi',
-                        requireLast: true
-                    },
-                    singleline: {
-                        delimiter: 'semi',
-                        requireLast: false
-                    }
-                }
-            ],
-            '@typescript-eslint/indent': [
-                'warn',
-                4,
-                {
-                    FunctionDeclaration: {
-                        parameters: 'first'
-                    },
-                    FunctionExpression: {
-                        parameters: 'first'
-                    },
-                    SwitchCase: 1
-                }
-            ],
-    
+
             '@typescript-eslint/explicit-member-accessibility': [
                 'error',
                 {
@@ -174,7 +140,7 @@ export default tseslint.config(
             'object-curly-spacing': ['error', 'always'],
             // 'import/no-deprecated': 'warn', // eslint deprecation rule sucks. just wrns on deprecated IMPORTs
             'tsdoc/syntax': 'off'
-    
+
             // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
             // e.g. '@typescript-eslint/explicit-function-return-type': 'off',
         },

@@ -1,4 +1,6 @@
-import { env } from '$env/dynamic/public';
+import {
+    env
+} from '$env/dynamic/public';
 import { error } from '@sveltejs/kit';
 export type DirList = {
 
@@ -13,31 +15,33 @@ export interface PagedDirList {
     files: DirList;
 }
 
-export const fetchDirListOrFile = async (fetchFn: typeof fetch, forHost: string, path: string, thumbName?: string, page?: string, JWT?: string) => {
+export const fetchDirListOrFile = async (
+    fetchFn: typeof fetch,
+    forHost: string,
+    path: string,
+    thumbName?: string,
+    page?: string,
+    JWT?: string) => {
 
     const host = env.INSVEX_PUBLIC_HOST || import.meta.env.INSVEX_PUBLIC_HOST || process?.env?.INSVEX_PUBLIC_HOST
-    || env.INSVEX_HOST || import.meta.env.INSVEX_HOST || process?.env?.INSVEX_HOST || 'localhost';
+        || env.INSVEX_HOST || import.meta.env.INSVEX_HOST || process?.env?.INSVEX_HOST || 'localhost';
     const port = env.INSVEX_PUBLIC_PORT || import.meta.env.INSVEX_PUBLIC_PORT || process?.env?.INSVEX_PUBLIC_PORT
-    || env.INSVEX_PORT || import.meta.env.INSVEX_PORT || process?.env?.INSVEX_PORT || '7069';
+        || env.INSVEX_PORT || import.meta.env.INSVEX_PORT || process?.env?.INSVEX_PORT || '7069';
 
-    let fetchUrl = '';
-    if (import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME)
-    {
+
+    let fetchUrl;
+
+    if (import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME) {
         if (thumbName) {
             return undefined;
         }
-        fetchUrl = `${
-            !host || host?.startsWith('http') ? '' : 'http://'
-        }${host || ''}${port ? ':' : ''}${port || ''}${path === '/' ? '' : path}/${
-            import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME
+        fetchUrl = `${!host || host?.startsWith('http') ? '' : 'http://'
+        }${host || ''}${port ? ':' : ''}${port || ''}${path === '/' ? '' : path}/${import.meta.env.INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME
         }`;
     } else {
-        fetchUrl = `${
-            !host || host?.startsWith('http') ? '' : 'http://'
-        }${host || ''}${port ? ':' : ''}${port || ''}/api/files/${forHost}${path}${
-            thumbName ? `?thumb=${thumbName}` : ''
-        }${
-            page ? `?page=${page}` : ''
+        fetchUrl = `${!host || host?.startsWith('http') ? '' : 'http://'
+        }${host || ''}${port ? ':' : ''}${port || ''}/api/files/${forHost}${path}${thumbName ? `?thumb=${thumbName}` : ''
+        }${page ? `?page=${page}` : ''
         }`;
     }
     const fetchResponse = await fetchFn(fetchUrl, {
