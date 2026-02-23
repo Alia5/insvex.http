@@ -5,9 +5,9 @@
     	"start": "node index.js"
     },
     "dependencies": {
-        "better-sqlite3": "^8.6.0",
+        "better-sqlite3": "^12.6.2",
         "highlight.js": "^11.8.0",
         "material-file-icons": "^2.4.0",
-        "mime-types": "^2.1.35"
+        "mime-types": "^3.0.2"
     }
 }
