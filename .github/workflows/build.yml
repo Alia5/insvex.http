@@ -1,132 +1,132 @@
 name: build
 on: [push]
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8.15.3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 22  
-      - run: pnpm run setup
-      - run: pnpm run lint:ci
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 10.30.1
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: 25
+            - run: pnpm run setup
+            - run: pnpm run lint:ci
 
-  build-SSR:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8.15.3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 22
-      - run: git submodule update --init --recursive    
-      - run: pnpm run setup
-      - run: pnpm run build
-        env:
-          NODE_ENV: 'production'
-          INSVEX_HOST: 'localhost'
-          INSVEX_PORT: '7069'
-          INSVEX_HOST_DIR_MAP: '{ "*": "." }'
-          INSVEX_ALLOWED_DIRS: '*'
-          INSVEX_THUMB_DIR: thumbs
-          INSVEX_THUMB_SIZE: 256
-          INSVEX_PUBLIC_HOST: 'localhost'
-          INSVEX_PUBLIC_PORT: '7069'
-          INSVEX_BUILDCONFIG_SPA: false
-          INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
-          INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''
-          INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: SSR
-          path: backend/dist
-          retention-days: 30
+    build-SSR:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 10.30.1
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: 25
+            - run: git submodule update --init --recursive
+            - run: pnpm run setup
+            - run: pnpm run build
+              env:
+                  NODE_ENV: "production"
+                  INSVEX_HOST: "localhost"
+                  INSVEX_PORT: "7069"
+                  INSVEX_HOST_DIR_MAP: '{ "*": "." }'
+                  INSVEX_ALLOWED_DIRS: "*"
+                  INSVEX_THUMB_DIR: thumbs
+                  INSVEX_THUMB_SIZE: 256
+                  INSVEX_PUBLIC_HOST: "localhost"
+                  INSVEX_PUBLIC_PORT: "7069"
+                  INSVEX_BUILDCONFIG_SPA: false
+                  INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ""
+                  INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ""
+                  INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+            - name: "Upload Artifact"
+              uses: actions/upload-artifact@v4
+              with:
+                  name: SSR
+                  path: backend/dist
+                  retention-days: 30
 
-  build-SPA:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8.15.3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 22
-      - run: git submodule update --init --recursive    
-      - run: pnpm run setup
-      - run: pnpm run build
-        env:
-          NODE_ENV: 'production'
-          INSVEX_HOST: ''
-          INSVEX_PORT: ''
-          INSVEX_HOST_DIR_MAP: '{ "*": "." }'
-          INSVEX_ALLOWED_DIRS: '*'
-          INSVEX_THUMB_DIR: thumbs
-          INSVEX_THUMB_SIZE: 256
-          INSVEX_PUBLIC_HOST: ''
-          INSVEX_PUBLIC_PORT: ''
-          INSVEX_BUILDCONFIG_SPA: 'true'
-          INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
-          INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ''
-          INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
-      - run: rm -rf backend/dist/frontend
-      - name: 'Upload Artifact (API)'
-        uses: actions/upload-artifact@v3
-        with:
-          name: SPA-API
-          path: backend/dist
-          retention-days: 30
-      - name: 'Upload Artifact (SPA)'
-        uses: actions/upload-artifact@v3
-        with:
-          name: SPA
-          path: frontend/build
-          retention-days: 30
+    build-SPA:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 10.30.1
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: 25
+            - run: git submodule update --init --recursive
+            - run: pnpm run setup
+            - run: pnpm run build
+              env:
+                  NODE_ENV: "production"
+                  INSVEX_HOST: ""
+                  INSVEX_PORT: ""
+                  INSVEX_HOST_DIR_MAP: '{ "*": "." }'
+                  INSVEX_ALLOWED_DIRS: "*"
+                  INSVEX_THUMB_DIR: thumbs
+                  INSVEX_THUMB_SIZE: 256
+                  INSVEX_PUBLIC_HOST: ""
+                  INSVEX_PUBLIC_PORT: ""
+                  INSVEX_BUILDCONFIG_SPA: "true"
+                  INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ""
+                  INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: ""
+                  INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+            - run: rm -rf backend/dist/frontend
+            - name: "Upload Artifact (API)"
+              uses: actions/upload-artifact@v4
+              with:
+                  name: SPA-API
+                  path: backend/dist
+                  retention-days: 30
+            - name: "Upload Artifact (SPA)"
+              uses: actions/upload-artifact@v4
+              with:
+                  name: SPA
+                  path: frontend/build
+                  retention-days: 30
 
-  build-SPA-NginX-AUTOINDEX:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8.15.3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 22
-      - run: git submodule update --init --recursive    
-      - run: pnpm run setup
-      - run: pnpm run build:spa
-        env:
-          NODE_ENV: 'production'
-          INSVEX_HOST: ''
-          INSVEX_PORT: ''
-          INSVEX_HOST_DIR_MAP: '{ "*": "." }'
-          INSVEX_ALLOWED_DIRS: '*'
-          INSVEX_THUMB_DIR: thumbs
-          INSVEX_THUMB_SIZE: 256
-          INSVEX_PUBLIC_HOST: ''
-          INSVEX_PUBLIC_PORT: ''
-          INSVEX_BUILDCONFIG_SPA: 'true'
-          INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ''
-          INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: 'index.json'
-          INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
-      - name: 'Upload Artifact (SPA-AUTOINDEX)'
-        uses: actions/upload-artifact@v3
-        with:
-          name: SPA-NginX-AUTOINDEX
-          path: frontend/build
-          retention-days: 30
+    build-SPA-NginX-AUTOINDEX:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 10.30.1
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: 25
+            - run: git submodule update --init --recursive
+            - run: pnpm run setup
+            - run: pnpm run build:spa
+              env:
+                  NODE_ENV: "production"
+                  INSVEX_HOST: ""
+                  INSVEX_PORT: ""
+                  INSVEX_HOST_DIR_MAP: '{ "*": "." }'
+                  INSVEX_ALLOWED_DIRS: "*"
+                  INSVEX_THUMB_DIR: thumbs
+                  INSVEX_THUMB_SIZE: 256
+                  INSVEX_PUBLIC_HOST: ""
+                  INSVEX_PUBLIC_PORT: ""
+                  INSVEX_BUILDCONFIG_SPA: "true"
+                  INSVEX_BUILDCONFIG_SPA_EXCLUDED_FILES: ""
+                  INSVEX_BUILDCONFIG_DIRECTORY_INDEX_NAME: "index.json"
+                  INSVEX_BUILDCONFIG_SPA_FULL_IMAGE_THUMBS: false
+            - name: "Upload Artifact (SPA-AUTOINDEX)"
+              uses: actions/upload-artifact@v4
+              with:
+                  name: SPA-NginX-AUTOINDEX
+                  path: frontend/build
+                  retention-days: 30
